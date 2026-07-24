@@ -1,0 +1,5 @@
+/laravel-api/vendor
+/laravel-api/.env
+/laravel-api/storage/*.key
+/react-app/node_modules
+/react-app/dist
