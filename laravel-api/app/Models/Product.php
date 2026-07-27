@@ -65,4 +65,40 @@ class Product extends Model
     {
         return round($this->reviews()->avg('rating') ?? 0, 1);
     }
+
+    // Only show products that are active AND belong to an approved seller
+    public function scopeAvailable($query)
+    {
+        return $query->where('status', 'active')
+            ->whereHas('seller.sellerProfile', fn ($q) => $q->where('status', 'approved'));
+    }
+
+    public function scopeInCategory($query, $categorySlug)
+    {
+        return $query->whereHas('category', fn ($q) => $q->where('slug', $categorySlug));
+    }
+
+    public function scopeSearch($query, $term)
+    {
+        return $query->where(fn ($q) => $q
+            ->where('title', 'like', "%{$term}%")
+            ->orWhere('description', 'like', "%{$term}%"));
+    }
+
+    public function scopePriceBetween($query, $min, $max)
+    {
+        return $query
+            ->when($min, fn ($q) => $q->where('price', '>=', $min))
+            ->when($max, fn ($q) => $q->where('price', '<=', $max));
+    }
+
+    public function scopeSortBy($query, $sort)
+    {
+        return match ($sort) {
+            'price_asc' => $query->orderBy('price', 'asc'),
+            'price_desc' => $query->orderBy('price', 'desc'),
+            'rating' => $query->withAvg('reviews', 'rating')->orderByDesc('reviews_avg_rating'),
+            default => $query->latest(), // 'newest'
+        };
+    }
 }
