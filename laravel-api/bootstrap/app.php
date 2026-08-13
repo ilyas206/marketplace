@@ -22,6 +22,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'auth.optional' => \App\Http\Middleware\AuthenticateOptionally::class,
+            'suspended' => \App\Http\Middleware\CheckNotSuspended::class,
         ]);
 
         //

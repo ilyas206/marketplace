@@ -32,6 +32,11 @@ class ProductDetailResource extends JsonResource
                 'total_products' => (int) $this->seller->products()->available()->count(),
             ],
             'reviews_count' => (int) $this->reviews()->count(),
+            'is_wishlisted' => $request->user()
+                ? \App\Models\Wishlist::where('user_id', $request->user()->id)
+                    ->where('product_id', $this->id)
+                    ->exists()
+                : false,
         ];
     }
 }

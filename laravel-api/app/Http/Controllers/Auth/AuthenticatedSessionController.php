@@ -31,6 +31,12 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
+        if ($user->is_suspended) {
+            throw ValidationException::withMessages([
+                'email' => ['Your account has been suspended. Contact support for assistance.'],
+            ]);
+        }
+
         $token = $user->createToken('api-token')->plainTextToken;
 
         return response()->json([
