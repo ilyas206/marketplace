@@ -7,15 +7,15 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: oklch(0.922 0 0);
+  --darker: #0F172A;
+  --action: #1E3A5F;
+  --orange: #F97316;
+  --background: #F8FAFC;
+  --borders: #E2E8F0;
+  --success: #16A34A;
+  --destructive: #e7000b;
+  
   --code-bg: #f4f3ec;
-  --accent: oklch(90.2% 0.063 306.703);
-  --accent-darker: oklch(62.7% 0.265 303.9);
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
@@ -37,8 +37,6 @@
   @media (max-width: 1024px) {
     font-size: 16px;
   }
-
-  --background: oklch(1 0 0);
 
   --foreground: oklch(0.145 0 0);
 
@@ -64,7 +62,6 @@
 
   --accent-foreground: oklch(0.205 0 0);
 
-  --destructive: oklch(0.577 0.245 27.325);
 
   --input: oklch(0.922 0 0);
 
@@ -120,6 +117,8 @@
 }
 
 body {
+  background-color: var(--background);
+  color: var(--text);
   margin: 0;
 }
 
@@ -129,51 +128,32 @@ body {
   text-align: center;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
+@layer base {
+  code,
+  .counter {
+    font-family: var(--mono);
+    display: inline-flex;
+    border-radius: 4px;
+    color: var(--text-h);
   }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
+
+  code {
+    font-size: 15px;
+    line-height: 135%;
+    padding: 4px 8px;
+    background: var(--code-bg);
   }
-}
-p {
-  margin: 0;
-}
-
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
-}
-
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
 }
 
 @theme inline {
+  --color-darker: var(--darker);
+  --color-action: var(--action);
+  --color-orange: var(--orange);
+  --color-background: var(--background);
+  --color-borders: var(--borders);
+  --color-success: var(--success);
+  --color-destructive: var(--destructive);
+
   --font-heading: var(--font-sans);
   --font-sans: 'Geist Variable', sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);

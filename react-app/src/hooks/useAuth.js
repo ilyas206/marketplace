@@ -1,11 +1,13 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import * as authApi from '../api/auth';
 import { useAuthStore } from '../store/authStore';
+import { useCartStore } from '../store/cartStore';
 
 export const useLogin = () => {
   const setAuth = useAuthStore((s) => s.setAuth);
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -22,6 +24,13 @@ export const useLogin = () => {
       }
 
       queryClient.invalidateQueries({ queryKey: ['cart'] });
+
+      // If the user was redirected here from a specific page (e.g. checkout), go back there
+      const redirectTo = location.state?.from;
+      if (redirectTo) {
+        navigate(redirectTo);
+        return;
+      }
 
       // Redirect based on role
       const roleNames = data.user.roles?.map((r) => r.name) ?? [];
@@ -47,6 +56,7 @@ export const useRegister = () => {
 
 export const useLogout = () => {
   const logoutStore = useAuthStore((s) => s.logout);
+  const setItemsCount = useCartStore((s) => s.setItemsCount);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -55,6 +65,7 @@ export const useLogout = () => {
     onSettled: () => {
       // Clear regardless of API success/failure — token might already be invalid
       logoutStore();
+      setItemsCount(0);
       queryClient.clear();
       navigate('/login');
     },

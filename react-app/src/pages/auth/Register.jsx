@@ -51,7 +51,7 @@ export default function Register() {
             {field('password', 'Password', 'password')}
             {field('password_confirmation', 'Confirm password', 'password')}
 
-            <Button type="submit" className="w-1/2 mb-1 bg-accent text-white hover:bg-accent-darker" disabled={register.isPending}>
+            <Button type="submit" className="w-1/2 mb-1 bg-action text-white hover:bg-darker" disabled={register.isPending}>
               {register.isPending ? 'Creating account...' : 'Register'}
             </Button>
           </form>

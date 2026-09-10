@@ -51,7 +51,7 @@ export default function Login() {
               />
             </div>
 
-            <Button type="submit" className="w-1/2 mb-1 bg-accent text-white hover:bg-accent-darker" disabled={login.isPending}>
+            <Button type="submit" className="w-1/2 mb-1 bg-action text-white hover:bg-darker" disabled={login.isPending}>
               {login.isPending ? 'Logging in...' : 'Login'}
             </Button>
           </form>

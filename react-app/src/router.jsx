@@ -19,12 +19,16 @@ import AdminDashboard from './pages/admin/Dashboard';
 import SellerRequests from './pages/admin/SellerRequests';
 import AdminCategories from './pages/admin/Categories';
 import AdminUsers from './pages/admin/Users';
+import { useCart } from './hooks/useCart';
+import { Toaster } from "@/components/ui/sonner";
 
 function RootLayout() {
+  useCart(); // fetches cart on app load, keeps itemsCount in sync via onSuccess
   return (
     <>
       <Navbar />
       <Outlet />
+      <Toaster/>
     </>
   );
 }

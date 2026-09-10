@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useProducts } from '../../hooks/useProducts';
 import { useCategories } from '../../hooks/useCategories';
+import { useDebounce } from '../../hooks/useDebounce';
 import ProductCard from '../../components/shared/ProductCard';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,28 +16,40 @@ import { useAuthStore } from '../../store/authStore';
 
 export default function Home() {
   const { user } = useAuthStore()
+  const [searchInput, setSearchInput] = useState('');
   const [filters, setFilters] = useState({
-    search: '',
     category: '',
     sort: 'newest',
     page: 1,
   });
 
-  const { data, isLoading, isError } = useProducts(filters);
+  const debouncedSearch = useDebounce(searchInput, 400);
+
+  const { data, isLoading, isError } = useProducts({
+    ...filters,
+    search: debouncedSearch,
+  });
   const { data: categories } = useCategories();
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value, page: 1 }));
   };
 
+  const handleSearchChange = (value) => {
+    setSearchInput(value);
+    setFilters((prev) => ({ ...prev, page: 1 })); // reset page when search changes too
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-6 py-8">
-      <h2 className="text-start">Hi, {user.name}</h2>
+      {
+        user && <h2 className="text-2xl font-bold text-start text-action">Hi, {user.name}</h2>
+      }
       <div className="my-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Input
           placeholder="Search products..."
-          value={filters.search}
-          onChange={(e) => updateFilter('search', e.target.value)}
+          value={searchInput}
+          onChange={(e) => handleSearchChange(e.target.value)}
           className="max-w-sm"
         />
 
@@ -46,9 +59,9 @@ export default function Home() {
               <SelectValue placeholder="All categories" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All categories</SelectItem>
+              <SelectItem value="" className="data-highlighted:bg-action data-highlighted:text-background! data-highlighted:**:text-background!">All categories</SelectItem>
               {categories?.map((cat) => (
-                <SelectItem key={cat.id} value={cat.slug}>
+                <SelectItem key={cat.id} value={cat.slug} className="data-highlighted:bg-action data-highlighted:text-background! data-highlighted:**:text-background!">
                   {cat.name}
                 </SelectItem>
               ))}
@@ -60,10 +73,10 @@ export default function Home() {
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="newest">Newest</SelectItem>
-              <SelectItem value="price_asc">Price: Low to High</SelectItem>
-              <SelectItem value="price_desc">Price: High to Low</SelectItem>
-              <SelectItem value="rating">Top Rated</SelectItem>
+              <SelectItem value="newest" className="data-highlighted:bg-action data-highlighted:text-background! data-highlighted:**:text-background!">Newest</SelectItem>
+              <SelectItem value="price_asc" className="data-highlighted:bg-action data-highlighted:text-background! data-highlighted:**:text-background!">Price: Low to High</SelectItem>
+              <SelectItem value="price_desc" className="data-highlighted:bg-action data-highlighted:text-background! data-highlighted:**:text-background!">Price: High to Low</SelectItem>
+              <SelectItem value="rating" className="data-highlighted:bg-action data-highlighted:text-background! data-highlighted:**:text-background!">Top Rated</SelectItem>
             </SelectContent>
           </Select>
         </div>
