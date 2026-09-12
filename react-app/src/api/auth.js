@@ -15,5 +15,11 @@ export const logout = async () => {
 };
 
 export const mergeGuestCart = async () => {
-  await api.post('/cart/merge');
+  const guestId = localStorage.getItem('guest_cart_id');
+
+  if (!guestId) return;
+
+  await api.post('/cart/merge', null, {
+    headers: { 'X-Guest-Cart-Id': guestId },
+  });
 };

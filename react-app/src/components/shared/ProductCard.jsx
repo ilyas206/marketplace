@@ -46,7 +46,7 @@ export default function ProductCard({ product }) {
             isOutOfStock 
             ? <Badge variant="secondary">Out of stock</Badge> 
             : <>
-              <span className="font-semibold text-orange">
+              <span className={`font-semibold ${hasDiscount ? 'text-success' : 'text-orange'}`}>
                 {product.final_price.toFixed(2)} MAD
               </span>
               {hasDiscount && (

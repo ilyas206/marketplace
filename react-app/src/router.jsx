@@ -7,6 +7,7 @@ import ProductDetail from './pages/buyer/ProductDetail';
 import Cart from './pages/buyer/Cart';
 import Checkout from './pages/buyer/Checkout';
 import OrderHistory from './pages/buyer/OrderHistory';
+import OrderDetail from './pages/buyer/OrderDetail';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 
@@ -48,8 +49,9 @@ export const router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
-          { path: '/checkout', element: <Checkout /> },
           { path: '/orders', element: <OrderHistory /> },
+          { path: '/orders/:id', element: <OrderDetail /> },
+          { path: '/checkout', element: <Checkout /> },
         ],
       },
 

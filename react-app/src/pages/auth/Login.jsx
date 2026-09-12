@@ -36,7 +36,7 @@ export default function Login() {
                 required
               />
               {fieldErrors.email && (
-                <p className="text-start text-text-destructive font-medium">{fieldErrors.email[0]}</p>
+                <p className="text-start text-destructive font-medium">{fieldErrors.email[0]}</p>
               )}
             </div>
 

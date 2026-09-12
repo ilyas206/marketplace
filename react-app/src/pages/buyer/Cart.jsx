@@ -29,7 +29,7 @@ export default function Cart() {
         <img src="empty_cart.jpg" alt="Your cart is empty" className='w-90 h-80 rounded-lg' />
         <h3 className="text-2xl font-bold text-action">Your cart is empty !</h3>
         <Link to="/">
-          <Button className="bg-action hover:bg-darker mt-2">Browse products</Button>
+          <Button className="bg-action hover:bg-darker mt-3">Browse products</Button>
         </Link>
       </div>
     );
