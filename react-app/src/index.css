@@ -9,6 +9,7 @@
 :root {
   --darker: #0F172A;
   --action: #1E3A5F;
+  --lighter: #a4b9d4;
   --orange: #F97316;
   --background: #F8FAFC;
   --borders: #E2E8F0;
@@ -148,6 +149,7 @@ body {
 @theme inline {
   --color-darker: var(--darker);
   --color-action: var(--action);
+  --color-lighter: var(--lighter);
   --color-orange: var(--orange);
   --color-background: var(--background);
   --color-borders: var(--borders);

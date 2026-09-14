@@ -22,6 +22,7 @@ import AdminCategories from './pages/admin/Categories';
 import AdminUsers from './pages/admin/Users';
 import { useCart } from './hooks/useCart';
 import { Toaster } from "@/components/ui/sonner";
+import DashboardLayout from './components/layout/DashboardLayout';
 
 function RootLayout() {
   useCart(); // fetches cart on app load, keeps itemsCount in sync via onSuccess
@@ -59,10 +60,15 @@ export const router = createBrowserRouter([
       {
         element: <ProtectedRoute allowedRoles={['seller']} />,
         children: [
-          { path: '/seller/dashboard', element: <SellerDashboard /> },
-          { path: '/seller/products', element: <SellerProducts /> },
-          { path: '/seller/orders', element: <SellerOrderItems /> },
-          { path: '/seller/stats', element: <SellerStats /> },
+          {
+            element : <DashboardLayout/>,
+            children : [
+              { path: '/seller/dashboard', element: <SellerDashboard /> },
+              { path: '/seller/products', element: <SellerProducts /> },
+              { path: '/seller/orders', element: <SellerOrderItems /> },
+              { path: '/seller/stats', element: <SellerStats /> },
+            ] 
+          }
         ],
       },
 
