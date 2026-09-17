@@ -91,9 +91,7 @@ export default function SellerProducts() {
       )}
 
       {data && data.data.length === 0 && (
-        <p className="py-12 text-center text-slate-500">
-          You haven't added any products yet.
-        </p>
+        <img src="/no_products.png" alt="No products added" className="mx-auto w-3/5 max-h-80" />
       )}
 
       {data && data.data.length > 0 && (

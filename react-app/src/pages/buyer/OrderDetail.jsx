@@ -1,9 +1,10 @@
-import { useParams, useLocation, Link } from 'react-router-dom';
+import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useOrder } from '../../hooks/useOrders';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { Dot } from 'lucide-react';
+import { Dot, MessagesSquare } from 'lucide-react';
 
 const STATUS_LABELS = {
   pending: { label: 'Pending confirmation', color: 'bg-slate-100 text-slate-700' },
@@ -16,6 +17,7 @@ const STATUS_LABELS = {
 export default function OrderDetail() {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const { data: order, isLoading } = useOrder(id);
 
   if (isLoading) {
@@ -73,6 +75,14 @@ export default function OrderDetail() {
                 <p className="flex items-center gap-1 mt-2 text-sm text-slate-500">
                   Qty <span className='font-semibold'>{item.quantity}</span> <Dot size={20}/> <span className='font-semibold'>{item.unit_price}</span> MAD each <Dot size={20}/> Sold by <span className='font-semibold'>{item.seller.name}</span>
                 </p>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-3"
+                    onClick={() => navigate(`/messages/${item.seller.id}?order=${order.id}`)}
+                  >
+                    Message Seller <MessagesSquare />
+                  </Button>
               </div>
               <Badge className={status.color}>{status.label}</Badge>
             </div>

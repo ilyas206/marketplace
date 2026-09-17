@@ -11,7 +11,7 @@ class OrderItemController extends Controller
     public function index(Request $request)
     {
         $items = $request->user()->soldOrderItems()
-            ->with('product:id,title,slug', 'order:id,shipping_address,phone,created_at')
+            ->with('product:id,title,slug', 'order:id,buyer_id,shipping_address,phone,created_at')
             ->when($request->status, fn ($q) => $q->where('item_status', $request->status))
             ->latest()
             ->paginate(15);

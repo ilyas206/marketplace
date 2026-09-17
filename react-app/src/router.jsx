@@ -23,6 +23,7 @@ import AdminUsers from './pages/admin/Users';
 import { useCart } from './hooks/useCart';
 import { Toaster } from "@/components/ui/sonner";
 import DashboardLayout from './components/layout/DashboardLayout';
+import Messages from './pages/shared/Messages';
 
 function RootLayout() {
   useCart(); // fetches cart on app load, keeps itemsCount in sync via onSuccess
@@ -53,6 +54,8 @@ export const router = createBrowserRouter([
           { path: '/orders', element: <OrderHistory /> },
           { path: '/orders/:id', element: <OrderDetail /> },
           { path: '/checkout', element: <Checkout /> },
+          { path: '/messages', element: <Messages /> },
+          { path: '/messages/:userId', element: <Messages /> },
         ],
       },
 

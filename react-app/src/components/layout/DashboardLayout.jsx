@@ -10,7 +10,7 @@ const links = [
 export default function DashboardLayout() {
   return (
     <div className="mx-auto flex max-w-7xl gap-8 px-6 py-7">
-      <aside className="w-48 h-96 shrink-0 bg-lighter rounded-md p-2">
+      <aside className="w-48 h-full shrink-0 bg-lighter rounded-md p-2">
         <nav className="space-y-3">
           {links.map((link) => (
             <NavLink

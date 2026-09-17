@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useOrders } from '../../hooks/useOrders';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dot } from 'lucide-react';
 
@@ -27,13 +26,7 @@ export default function OrderHistory() {
 
   if (!data || data.data.length === 0) {
     return (
-      <div className="flex flex-col justify-center items-center py-4 text-center mt-7">
-        <img src="no_orders.jpg" alt="No orders so far" className='w-80 h-70 rounded-lg' />
-        <h3 className="text-2xl font-bold text-action">You haven't placed any orders yet.</h3>
-        <Link to="/">
-          <Button className="bg-action hover:bg-darker mt-3">Start shopping</Button>
-        </Link>
-      </div>
+      <img src="no_orders.png" alt="No orders so far" className='mx-auto w-3/5 max-h-95 mt-7' />
     );
   }
 

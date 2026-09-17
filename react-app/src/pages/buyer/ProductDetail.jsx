@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useProduct, useRelatedProducts } from '../../hooks/useProducts';
 import { useAddToCart } from '../../hooks/useCart';
 import { useToggleWishlist } from '../../hooks/useWishlist';
@@ -9,10 +9,11 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { toast } from "sonner";
-import { Dot, Heart, ImageOff, ShoppingCartPlus, Star } from 'lucide-react';
+import { Dot, Heart, ImageOff, ShoppingCartPlus, Star, MessagesSquare } from 'lucide-react';
 
 export default function ProductDetail() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   const { data: product, isLoading } = useProduct(slug);
   const { data: related } = useRelatedProducts(slug);
   const [activeImage, setActiveImage] = useState(0);
@@ -183,6 +184,17 @@ export default function ProductDetail() {
             <p className="text-sm text-slate-500">Sold by</p>
             <p className="font-medium text-slate-900">{product.seller.business_name}</p>
             <p className="text-sm text-slate-500">{product.seller.total_products} products</p>
+
+            {isAuthenticated && (
+              <Button
+                variant="ghost"
+                size="sm"
+                className="mt-3"
+                onClick={() => navigate(`/messages/${product.seller.id}`)}
+              >
+                Message Seller <MessagesSquare />
+              </Button>
+            )}
           </div>
         </div>
       </div>

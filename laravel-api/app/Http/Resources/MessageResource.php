@@ -16,7 +16,7 @@ class MessageResource extends JsonResource
             'is_mine' => $this->sender_id === $request->user()->id,
             'order_id' => $this->order_id,
             'read_at' => $this->read_at,
-            'created_at' => $this->created_at,
+            'created_at' => $this->created_at
         ];
     }
 }
