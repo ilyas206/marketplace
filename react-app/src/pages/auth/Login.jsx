@@ -19,8 +19,8 @@ export default function Login() {
   const fieldErrors = login.error?.response?.data?.errors ?? {};
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <Card className="w-full max-w-sm">
+    <div className="flex items-center justify-center px-4">
+      <Card className="w-full max-w-sm mt-25">
         <CardHeader>
           <CardTitle>Login</CardTitle>
         </CardHeader>

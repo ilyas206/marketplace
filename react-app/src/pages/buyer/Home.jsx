@@ -50,7 +50,7 @@ export default function Home() {
           placeholder="Search products..."
           value={searchInput}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="max-w-sm"
+          className="max-w-sm text-darker"
         />
 
         <div className="flex gap-3">
@@ -91,15 +91,11 @@ export default function Home() {
       )}
 
       {isError && (
-        <p className="text-center text-slate-500 py-12">
-          Couldn't load products. Try refreshing the page.
-        </p>
+        <img src="/products_loading_error.png" alt="Couldn't load products. Try refreshing the page.." className='mx-auto w-2/5 max-h-95' />
       )}
 
       {data && data.data.length === 0 && (
-        <p className="text-center text-slate-500 py-12">
-          No products match your search.
-        </p>
+        <img src="/no_matching_products.png" alt="No products match your search." className='mx-auto w-2/5 max-h-95' />
       )}
 
       {data && data.data.length > 0 && (

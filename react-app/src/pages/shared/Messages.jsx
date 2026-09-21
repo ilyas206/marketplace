@@ -11,9 +11,9 @@ export default function Messages() {
   const orderId = searchParams.get('order') || undefined;
 
   return (
-    <div className="flex h-[calc(100vh-73px)] ">
+    <div className="flex h-[calc(100dvh-73px)] min-h-0 overflow-hidden">
       {/* Conversation list */}
-      <aside className="w-72 shrink-0 border-r border-borders overflow-y-auto">
+      <aside className="w-72 shrink-0 overflow-y-auto border-r border-borders">
         <h1 className="border-b border-borders px-4 py-3 font-semibold text-action">
           Conversations
         </h1>
@@ -48,7 +48,7 @@ export default function Messages() {
       </aside>
 
       {/* Active thread */}
-      <div className="flex-1">
+      <div className="min-w-0 min-h-0 flex-1 overflow-hidden">
         {userId ? (
           <ChatThread otherUserId={userId} orderId={orderId} />
         ) : (

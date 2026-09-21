@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useProduct, useRelatedProducts } from '../../hooks/useProducts';
 import { useAddToCart } from '../../hooks/useCart';
 import { useToggleWishlist } from '../../hooks/useWishlist';
+import { useProductReviews } from '../../hooks/useReviews';
 import { useAuthStore } from '../../store/authStore';
 import ProductCard from '../../components/shared/ProductCard';
 import { Button } from '@/components/ui/button';
@@ -16,12 +17,14 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const { data: product, isLoading } = useProduct(slug);
   const { data: related } = useRelatedProducts(slug);
+  const { data: reviews } = useProductReviews(slug);
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
+  const { isAuthenticated, hasRole } = useAuthStore();
+
   const addToCart = useAddToCart();
   const toggleWishlist = useToggleWishlist(slug);
-  const isAuthenticated = useAuthStore((s) => s.isAuthenticated());
 
   useEffect(() => {
     if (addToCart.isError) {
@@ -34,6 +37,11 @@ export default function ProductDetail() {
       });
     }
   }, [addToCart.isError, addToCart.error]);
+
+  useEffect(() => {
+    setActiveImage(0);
+    setQuantity(1);
+  }, [slug]);
 
   if (isLoading) {
     return (
@@ -55,7 +63,15 @@ export default function ProductDetail() {
   const hasDiscount = product.discount_price !== null;
 
   const handleAddToCart = () => {
-    addToCart.mutate({ product_id: product.id, quantity });
+    addToCart.mutate({ product_id: product.id, quantity }, {
+      onSuccess: () => toast.success('Product added to cart successfully.' , {
+          style: {
+            background: 'var(--success)',
+            color: 'var(--background)',
+            border: 'transparent'
+          },
+        })
+    });
   };
 
   return (
@@ -102,9 +118,9 @@ export default function ProductDetail() {
 
           {product.average_rating > 0 && (
             <div className="flex items-center justify-center gap-1 mt-1 mb-5 text-sm text-slate-500">
-              <Star size={16}/> 
+              <Star size={16} className='fill-amber-400 stroke-0' /> 
               {product.average_rating}
-              <Dot size={16} />
+              <Dot size={20} />
               {product.reviews_count} reviews
             </div>
           )}
@@ -132,60 +148,62 @@ export default function ProductDetail() {
           {/* Quantity + actions */}
           {product.in_stock && (
             <>
-              <Separator className="my-4 bg-borders" />
-              <div className="flex items-center gap-3">
-                <div className="flex items-center rounded-md border border-borders">
-                  <button
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="px-3 py-1 text-slate-600 hover:bg-borders"
-                  >
-                    -
-                  </button>
-                  <span className="w-10 text-center text-action">{quantity}</span>
-                  <button
-                    onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
-                    className="px-3 py-1 text-slate-600 hover:bg-borders"
-                  >
-                    +
-                  </button>
-                </div>
+              {
+                (!hasRole('seller') && !hasRole('admin')) && <>
+                  <Separator className="my-4 bg-borders" />
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center rounded-md border border-borders">
+                      <button
+                        onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                        className="px-3 py-1 text-slate-600 hover:bg-borders"
+                      >
+                        -
+                      </button>
+                      <span className="w-10 text-center text-action">{quantity}</span>
+                      <button
+                        onClick={() => setQuantity((q) => Math.min(product.stock, q + 1))}
+                        className="px-3 py-1 text-slate-600 hover:bg-borders"
+                      >
+                        +
+                      </button>
+                    </div>
 
-                <Button onClick={handleAddToCart} disabled={addToCart.isPending} className="bg-action hover:bg-darker flex-1">
-                  {addToCart.isPending ? 
-                    'Adding...' : 
-                    <div className='flex items-center gap-2'>
-                      <ShoppingCartPlus size={30}/>
-                      <span>Add to Cart</span>
-                    </div>}
-                </Button>
+                    <Button onClick={handleAddToCart} disabled={addToCart.isPending} className="bg-action hover:bg-darker flex-1">
+                      {addToCart.isPending ? 
+                        'Adding...' : 
+                        <div className='flex items-center gap-2'>
+                          <ShoppingCartPlus size={30}/>
+                          <span>Add to Cart</span>
+                        </div>}
+                    </Button>
 
-                {isAuthenticated && (
-                  <Button
-                    variant="outline"
-                    className="border-borders"
-                    onClick={() => toggleWishlist.mutate(product.id)}
-                    disabled={toggleWishlist.isPending}
-                  >
-                    {
-                      product.is_wishlisted ? 
-                      <Heart className='fill-destructive text-destructive' strokeWidth={1} /> : 
-                      <Heart className='text-darker' strokeWidth={1} />
-                    }
-                  </Button>
-                )}
-              </div>
+                    {isAuthenticated() && (
+                      <Button
+                        variant="outline"
+                        className="border-borders"
+                        onClick={() => toggleWishlist.mutate(product.id, {onSuccess: (response) => toast.success(response.message , { style: {background: 'var(--success)', color: 'var(--background)', border: 'transparent'} })})}
+                        disabled={toggleWishlist.isPending}
+                      >
+                        {
+                          product.is_wishlisted ? 
+                          <Heart className='fill-destructive text-destructive' strokeWidth={1} /> : 
+                          <Heart className='text-darker' strokeWidth={1} />
+                        }
+                      </Button>
+                    )}
+                  </div>
+                </>
+              }
             </>
           )}
 
-          <Separator className="my-4 bg-borders" />
-
           {/* Seller info */}
-          <div className="rounded-lg border border-borders p-4 space-y-1">
+          <div className="rounded-lg border border-borders p-4 space-y-1 mt-4">
             <p className="text-sm text-slate-500">Sold by</p>
             <p className="font-medium text-slate-900">{product.seller.business_name}</p>
             <p className="text-sm text-slate-500">{product.seller.total_products} products</p>
 
-            {isAuthenticated && (
+            {(isAuthenticated() && !hasRole('seller')) && (
               <Button
                 variant="ghost"
                 size="sm"
@@ -197,6 +215,43 @@ export default function ProductDetail() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Product reviews */}
+      <div className="mt-12">
+        <h2 className="mb-4 text-lg font-semibold text-action">
+          Reviews {product.reviews_count > 0 && `(${product.reviews_count})`}
+        </h2>
+
+        {reviews && reviews.data.length === 0 && (
+          <img src="/no_reviews.png" alt="No reviews yet." className='mx-auto w-2/5 max-h-95 mt-8' />
+        )}
+
+        {reviews && reviews.data.length > 0 && (
+          <div className="space-y-4">
+            {reviews.data.map((review) => (
+              <div key={review.id} className="border-b border-borders pb-4">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-sm font-medium text-slate-900">{review.buyer_name}</span>
+                  <div className="flex text-amber-400" aria-label={`${review.rating} out of 5 stars`}>
+                    {Array.from({ length: 5 }, (_, index) => (
+                      <Star
+                        key={index}
+                        size={16}
+                        fill={index < review.rating ? 'currentColor' : 'none'}
+                        strokeWidth={1.5}
+                      />
+                    ))}
+                  </div>
+                </div>
+                {review.comment && <p className="mt-1 text-sm text-slate-600">{review.comment}</p>}
+                <p className="mt-1 text-xs font-semibold text-slate-400">
+                  {new Date(review.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Related products */}

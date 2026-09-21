@@ -1,19 +1,27 @@
 import { useState, useEffect, useRef } from 'react';
 import { useThread, useSendMessage } from '../../hooks/useMessages';
+import { useUserProfile } from '../../hooks/useUserProfile';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CheckCheck, Send } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 
 export default function ChatThread({ otherUserId, orderId }) {
+  const { data: profile } = useUserProfile(otherUserId);
   const { data: messages, isLoading } = useThread(otherUserId, orderId);
   const sendMessage = useSendMessage(otherUserId, orderId);
+  const { reset: resetSendMessage } = sendMessage;
   const [body, setBody] = useState('');
   const bottomRef = useRef(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    setBody('');
+    resetSendMessage();
+  }, [otherUserId, orderId, resetSendMessage]);
 
   const handleSend = (e) => {
     e.preventDefault();
@@ -26,14 +34,23 @@ export default function ChatThread({ otherUserId, orderId }) {
   };
 
   return (
-    <div className="relative flex h-full flex-col overflow-hidden">
+    <div className="relative flex h-full min-h-0 flex-col overflow-hidden">
       <img
         src="/thread_bg.png"
         alt="Threads background"
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover opacity-25"
+        className="absolute inset-0 h-full w-full object-cover opacity-30"
       />
-      <div className="relative flex-1 space-y-1 overflow-y-auto p-3">
+      <div className="relative z-10 shrink-0 border-b border-borders rounded-md bg-white/80 px-4 py-3">
+        <p className="font-medium text-darker">
+          {profile?.business_name || profile?.name || <Skeleton className="mx-auto h-10 w-45" />}
+        </p>
+        {profile?.roles?.length > 0 && (
+          <p className="text-xs text-slate-500 capitalize">{profile.roles.join(', ')}</p>
+        )}
+      </div>
+
+      <div className="relative min-h-0 flex-1 space-y-1 overflow-y-auto p-3">
         {
             isLoading && <div className="space-y-2 p-3">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -41,7 +58,6 @@ export default function ChatThread({ otherUserId, orderId }) {
             ))}
           </div>
         }
-
 
         {messages?.data.map((msg) => (
           <div
@@ -92,7 +108,7 @@ export default function ChatThread({ otherUserId, orderId }) {
       </form>
 
       {sendMessage.isError && (
-        <p className="px-3 pb-2 text-sm text-destructive">
+        <p className="px-3 pb-2 text-sm font-semibold text-destructive">
           {sendMessage.error.response?.data?.message ??
             Object.values(sendMessage.error.response?.data?.errors ?? {})[0]?.[0] ??
             'Message not sent.'}

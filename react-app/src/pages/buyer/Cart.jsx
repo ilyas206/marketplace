@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { ImageOff, ShoppingCartMinus } from 'lucide-react';
+import { toast } from "sonner";
 
 export default function Cart() {
   const { data: cart, isLoading } = useCart();
@@ -36,10 +37,10 @@ export default function Cart() {
 
   const handleCheckout = () => {
     if (!isAuthenticated) {
-      navigate('/login', { state: { from: '/checkout' } });
+      navigate('/login', { state: { from: '/buyer/checkout' } });
       return;
     }
-    navigate('/checkout');
+    navigate('/buyer/checkout');
   };
 
   return (
@@ -106,8 +107,8 @@ export default function Cart() {
             </p>
 
             <button
-              onClick={() => removeItem.mutate(item.id)}
-              className="absolute top-2 right-4 text-slate-400 hover:text-red-500"
+              onClick={() => removeItem.mutate(item.id, {onSuccess: () => toast.error('Item removed from Cart successfully.' , {style: {background: 'var(--destructive)', color: 'var(--background)', border: 'transparent'} })})}
+              className="absolute top-2 right-4 text-slate-400 hover:text-destructive"
               disabled={removeItem.isPending}
               aria-label="Remove item"
             >

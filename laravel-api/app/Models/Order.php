@@ -29,4 +29,21 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function syncStatus(): void
+    {
+        $statuses = $this->items()->pluck('item_status');
+
+        if ($statuses->isNotEmpty() && $statuses->every(fn ($s) => $s === 'cancelled')) {
+            $this->status = 'cancelled';
+        } elseif ($statuses->isNotEmpty() && $statuses->every(fn ($s) => $s === 'delivered')) {
+            $this->status = 'completed';
+        } elseif ($statuses->contains(fn ($s) => in_array($s, ['confirmed', 'shipped', 'delivered']))) {
+            $this->status = 'processing';
+        } else {
+            $this->status = 'pending';
+        }
+
+        $this->save();
+    }
 }

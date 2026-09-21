@@ -24,13 +24,15 @@ class SellerApprovalController extends Controller
     public function show(SellerProfile $sellerProfile)
     {
         // load() is used after you already fetched the seller profile object.
-        $sellerProfile->load('user:id,name,email,phone');
+        $sellerProfile->load('user:id,name,email');
 
         return response()->json([
             'id' => $sellerProfile->id,
             'business_name' => $sellerProfile->business_name,
             'description' => $sellerProfile->description,
-            'document_url' => asset('storage/' . $sellerProfile->document_path),
+            'document_url' => $sellerProfile->document_path
+                ? asset('storage/' . str_replace('\\', '/', $sellerProfile->document_path))
+                : null,
             'status' => $sellerProfile->status,
             'user' => $sellerProfile->user,
             'submitted_at' => $sellerProfile->created_at,
@@ -51,9 +53,9 @@ class SellerApprovalController extends Controller
 
         $sellerProfile->user->assignRole('seller');
 
-        return response()->json(['message' => 'Seller approved.']);
+        return response()->json(['message' => 'Seller approved successfully.']);
     }
-
+    
     public function reject(Request $request, SellerProfile $sellerProfile)
     {
         $request->validate([

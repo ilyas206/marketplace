@@ -39,8 +39,8 @@ export default function Register() {
   );
 
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <Card className="w-1/2 p-3">
+    <div className="flex items-center justify-center">
+      <Card className="w-1/2 p-3 mt-10">
         <CardHeader>
           <CardTitle>Create an account</CardTitle>
         </CardHeader>

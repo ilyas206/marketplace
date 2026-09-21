@@ -53,9 +53,7 @@ export default function SellerStats() {
         {loadingIncome && <Skeleton className="h-64 w-full" />}
 
         {income && income.length === 0 && (
-          <p className="py-12 text-center text-sm text-slate-500">
-            No delivered orders yet — income reflects only completed sales.
-          </p>
+          <img src="/no_delivered_orders.png" alt="No delivered orders yet — income reflects only completed sales." className='mx-auto w-3/5 max-h-95' />
         )}
 
         {income && income.length > 0 && (
@@ -79,7 +77,7 @@ export default function SellerStats() {
           {loadingBestSelling && <Skeleton className="h-64 w-full" />}
 
           {bestSelling && bestSelling.length === 0 && (
-            <p className="py-12 text-center text-sm text-slate-500">No sales yet.</p>
+            <img src="/no_sales.png" alt="No sales yet." className='mx-auto w-3/5 max-h-95' />
           )}
 
           {bestSelling && bestSelling.length > 0 && (
@@ -107,7 +105,7 @@ export default function SellerStats() {
           {loadingCategories && <Skeleton className="h-64 w-full" />}
 
           {topCategories && topCategories.length === 0 && (
-            <p className="py-12 text-center text-sm text-slate-500">No sales yet.</p>
+            <img src="/no_sales.png" alt="No sales yet." className='mx-auto w-3/5 max-h-95' />
           )}
 
           {topCategories && topCategories.length > 0 && (

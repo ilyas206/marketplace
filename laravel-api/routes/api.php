@@ -14,11 +14,14 @@ use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\SellerApplicationController;
+use App\Http\Controllers\Api\WishlistController;
+use App\Http\Controllers\Api\UserProfileController;
 
 use App\Http\Controllers\Api\Seller\OrderItemController;
 use App\Http\Controllers\Api\Seller\ProductController as SellerProductController;
 use App\Http\Controllers\Api\Seller\StatsController;
-use App\Http\Controllers\Api\WishlistController;
+use App\Http\Controllers\Api\Seller\ComplaintController as SellerComplaintController;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -32,10 +35,19 @@ Route::middleware(['auth:sanctum', 'suspended'])->group(function () {
     // Buyer-side complaints
     Route::post('/complaints', [ComplaintController::class, 'store']);
     Route::get('/complaints', [ComplaintController::class, 'index']);
-    // buyer/seller messages
+    // messages
     Route::post('/messages', [MessageController::class, 'store']);
     Route::get('/messages/conversations', [MessageController::class, 'conversations']);
     Route::get('/messages/thread/{user}', [MessageController::class, 'thread']);
+    // reviews
+    Route::get('/reviews/mine', [ReviewController::class, 'mine']);
+    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
+    // wishlist
+    Route::get('/wishlist', [WishlistController::class, 'index']);
+    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
+    // specific user's infos
+    Route::get('/users/{user}/profile', [UserProfileController::class, 'show']);
 });
 
 Route::middleware(['auth:sanctum', 'role:admin', 'suspended'])->prefix('admin')->group(function () {
@@ -69,6 +81,9 @@ Route::middleware(['auth:sanctum', 'role:seller', 'suspended'])->prefix('seller'
     Route::get('/stats/income', [StatsController::class, 'income']);
     Route::get('/order-items', [OrderItemController::class, 'index']);
     Route::patch('/order-items/{orderItem}/status', [OrderItemController::class, 'updateStatus']);
+    Route::get('/complaints', [SellerComplaintController::class, 'index']);
+
+    Route::get('/support-contact', [UserProfileController::class, 'supportContact']);
 });
 
 // Public — categories should be visible to everyone for browsing/filtering
@@ -79,14 +94,6 @@ Route::get('/products/{slug}/related', [ProductController::class, 'related']);
 
 // Public — reviews visible to guests on product page
 Route::get('/products/{productSlug}/reviews', [ReviewController::class, 'index']);
-
-Route::middleware(['auth:sanctum', 'suspended'])->group(function () {
-    Route::post('/reviews', [ReviewController::class, 'store']);
-    Route::delete('/reviews/{review}', [ReviewController::class, 'destroy']);
-
-    Route::get('/wishlist', [WishlistController::class, 'index']);
-    Route::post('/wishlist/toggle', [WishlistController::class, 'toggle']);
-});
 
 Route::middleware(['auth.optional', 'suspended'])->group(function() {
     Route::get('/products/{slug}', [ProductController::class, 'show']);

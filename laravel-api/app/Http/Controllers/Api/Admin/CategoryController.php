@@ -13,7 +13,9 @@ class CategoryController extends Controller
     {
         // Only top-level categories with their children nested — clean tree for UI
         $categories = Category::whereNull('parent_id')
-            ->with('children')
+            ->with(['children' => function ($query) {
+                $query->withCount('products');
+            }])
             ->withCount('products')
             ->get();
 

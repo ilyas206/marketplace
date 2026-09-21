@@ -31,14 +31,14 @@ export default function OrderHistory() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-6 py-8">
-      <h1 className="mb-6 text-xl font-bold text-action">My Orders</h1>
+    <div className="mx-auto px-6 py-2">
+      <h1 className="text-xl font-semibold text-action">My Orders</h1>
 
-      <div className="space-y-3">
+      <div className="mt-7 space-y-3">
         {data.data.map((order) => (
           <Link
             key={order.id}
-            to={`/orders/${order.id}`}
+            to={`/buyer/orders/${order.id}`}
             className="flex items-center justify-between rounded-lg border border-slate-200 p-4 hover:shadow-sm"
           >
             <div>

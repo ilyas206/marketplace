@@ -60,7 +60,7 @@ export default function ProductCard({ product }) {
 
         {product.average_rating > 0 && (
           <div className="flex items-center justify-center gap-1 text-action">
-            <Star size={16} /> 
+            <Star size={16} className='fill-amber-400 stroke-0' /> 
             <span className='text-xs font-medium'>{product.average_rating} rating</span>
           </div>
         )}

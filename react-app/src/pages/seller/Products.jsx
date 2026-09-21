@@ -28,6 +28,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Plus } from 'lucide-react';
+import { toast } from "sonner";
 
 export default function SellerProducts() {
   const { data, isLoading } = useSellerProducts();
@@ -41,22 +42,49 @@ export default function SellerProducts() {
 
   const handleCreate = (formData) => {
     createProduct.mutate(formData, {
-      onSuccess: () => setCreateOpen(false),
+      onSuccess: () => {
+        setCreateOpen(false);
+        toast.success('Product created successfully.' , {
+          style: {
+            background: 'var(--success)',
+            color: 'var(--background)',
+            border: 'transparent'
+          },
+        })
+      },
     });
   };
 
   const handleUpdate = (payload) => {
     updateProduct.mutate(
       { productId: editingProduct.id, payload },
-      { onSuccess: () => setEditingProduct(null) }
-    );
+      { onSuccess: () => {
+        setEditingProduct(null);
+        toast.success('Product edited successfully.' , {
+          style: {
+            background: 'var(--lighter)',
+            color: 'var(--darker)',
+            border: 'transparent'
+          },
+        })
+      } 
+    });
   };
 
   const handleDelete = (productId) => {
     deleteProduct.mutate(
         productId,
-        { onSuccess: () => setDeletingProduct(null) }
-    );
+        { onSuccess: () => {
+          setDeletingProduct(null);
+          toast.success('Product removed successfully.' , {
+            style: {
+              background: 'var(--destructive)',
+              color: 'var(--background)',
+              border: 'transparent'
+            },
+          })
+        } 
+        });
   };
 
   return (
@@ -130,11 +158,11 @@ export default function SellerProducts() {
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right space-x-2">
-                  <Button variant="outline" size="sm" onClick={() => setEditingProduct(product)}>
+                  <Button size="sm" onClick={() => setEditingProduct(product)} className="text-action bg-action/20 hover:bg-action/30">
                     Edit
                   </Button>
                   <Button variant="destructive" size="sm" onClick={() => setDeletingProduct(product)}>
-                    Delete
+                    Remove
                   </Button>
                 </TableCell>
               </TableRow>
@@ -163,7 +191,7 @@ export default function SellerProducts() {
       <Dialog open={!!deletingProduct} onOpenChange={(open) => !open && setDeletingProduct(null)}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className='text-darker'>Delete Product</DialogTitle>
+            <DialogTitle className='text-darker'>Remove Product</DialogTitle>
           </DialogHeader>
             <DialogDescription>
                 Remove <b>{deletingProduct?.title}</b> ? This can't be undone from here
@@ -174,7 +202,7 @@ export default function SellerProducts() {
                 </DialogClose>
                 <Button onClick={() => handleDelete(deletingProduct?.id)} disabled={deleteProduct.isPending} size="sm" className="bg-destructive/50 hover:bg-destructive">
                     {
-                        deleteProduct.isPending ? 'Deleting...' : 'Delete'
+                        deleteProduct.isPending ? 'Removing...' : 'Remove'
                     }
                 </Button>
             </DialogFooter>

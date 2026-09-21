@@ -11,7 +11,7 @@ class OrderItemController extends Controller
     public function index(Request $request)
     {
         $items = $request->user()->soldOrderItems()
-            ->with('product:id,title,slug', 'order:id,buyer_id,shipping_address,phone,created_at')
+            ->with('product:id,title,slug', 'order:id,buyer_id,shipping_address,phone,created_at', 'order.buyer:id,name')
             ->when($request->status, fn ($q) => $q->where('item_status', $request->status))
             ->latest()
             ->paginate(15);
@@ -43,7 +43,8 @@ class OrderItemController extends Controller
         }
 
         $orderItem->update(['item_status' => $request->status]);
+        $orderItem->order->syncStatus(); 
 
-        return response()->json(['message' => 'Status updated.', 'item' => $orderItem]);
+        return response()->json(['message' => 'Status updated successfully to ' . $request->status . '.', 'item' => $orderItem]);
     }
 }

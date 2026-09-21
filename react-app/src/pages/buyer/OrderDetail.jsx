@@ -1,10 +1,19 @@
+import { useMemo, useState } from 'react';
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useOrder } from '../../hooks/useOrders';
+import { useSubmitReview } from '../../hooks/useReviews';
+import { useFileComplaint } from '../../hooks/useComplaints';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Dot, MessagesSquare } from 'lucide-react';
+import { Dot, MessagesSquare, Star, TriangleAlert, UserStar } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from 'sonner';
 
 const STATUS_LABELS = {
   pending: { label: 'Pending confirmation', color: 'bg-slate-100 text-slate-700' },
@@ -19,6 +28,50 @@ export default function OrderDetail() {
   const location = useLocation();
   const navigate = useNavigate();
   const { data: order, isLoading } = useOrder(id);
+  const [reviewingProduct, setReviewingProduct] = useState(null);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const submitReview = useSubmitReview();
+
+  // Derive the unique sellers involved in this order
+  const uniqueSellers = useMemo(() => (
+    order?.items?.reduce((acc, item) => {
+      if (!acc.find((seller) => seller.id === item.seller.id)) acc.push(item.seller);
+      return acc;
+    }, []) ?? []
+  ), [order]);
+
+  const [complaintOpen, setComplaintOpen] = useState(false);
+  const [complaintForm, setComplaintForm] = useState({ subject: '', description: '', seller_id: '' });
+  const fileComplaint = useFileComplaint();
+
+  const handleSubmitReview = () => {
+    submitReview.mutate(
+      { product_id: reviewingProduct.id, rating, comment },
+      { onSuccess: () => { setReviewingProduct(null); setComment(''); setRating(5); toast.success('Review added successfully.' , {
+          style: {
+            background: 'var(--success)',
+            color: 'var(--background)',
+            border: 'transparent'
+          },
+        }) 
+      }}
+    );
+  };
+
+  const handleFileComplaint = () => {
+    fileComplaint.mutate(
+      { order_id: order.id, seller_id: complaintForm.seller_id || uniqueSellers[0]?.id || null, subject: complaintForm.subject, description: complaintForm.description },
+      { onSuccess: () => { setComplaintOpen(false); setComplaintForm({ subject: '', description: '' }); toast.success('Complaint filed successfully.' , {
+          style: {
+            background: 'var(--success)',
+            color: 'var(--background)',
+            border: 'transparent'
+          },
+        })
+      }}
+    );
+  };
 
   if (isLoading) {
     return (
@@ -32,7 +85,7 @@ export default function OrderDetail() {
   if (!order) return null;
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-8">
+    <div className="mx-auto px-6 py-2">
       {location.state?.justPlaced && (
         <div className="mb-6 rounded-lg bg-success/10 p-4 text-success font-semibold">
           Order placed successfully. You'll be notified as it progresses.
@@ -41,10 +94,13 @@ export default function OrderDetail() {
 
       <div className="mb-6 flex items-center justify-center">
         <div>
-          <h1 className="text-2xl font-semibold text-darker">Order #{order.id}</h1>
+          <h1 className="text-2xl font-semibold text-action">Order #{order.id}</h1>
           <p className="text-sm text-slate-500">
             Placed on {new Date(order.created_at).toLocaleDateString()}
           </p>
+          <Button variant="ghost" size="sm" onClick={() => setComplaintOpen(true)} className="mt-2 hover:text-destructive">
+            Report an issue <TriangleAlert />
+          </Button>
         </div>
       </div>
 
@@ -75,7 +131,8 @@ export default function OrderDetail() {
                 <p className="flex items-center gap-1 mt-2 text-sm text-slate-500">
                   Qty <span className='font-semibold'>{item.quantity}</span> <Dot size={20}/> <span className='font-semibold'>{item.unit_price}</span> MAD each <Dot size={20}/> Sold by <span className='font-semibold'>{item.seller.name}</span>
                 </p>
-                <Button
+                <div className='flex items-center justify-center gap-1'>
+                  <Button
                     variant="ghost"
                     size="sm"
                     className="mt-3"
@@ -83,6 +140,17 @@ export default function OrderDetail() {
                   >
                     Message Seller <MessagesSquare />
                   </Button>
+                  {item.item_status === 'delivered' && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-3"
+                      onClick={() => setReviewingProduct({ id: item.product.id, })}
+                    >
+                      Write a review <UserStar />
+                    </Button>
+                  )}
+                </div>
               </div>
               <Badge className={status.color}>{status.label}</Badge>
             </div>
@@ -96,6 +164,80 @@ export default function OrderDetail() {
         <span>Total</span>
         <span>{order.total_amount} MAD</span>
       </div>
+
+      <Dialog open={!!reviewingProduct} onOpenChange={(open) => !open && (setReviewingProduct(null), setRating(5), setComment(''))}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Rate this product</DialogTitle></DialogHeader>
+          <div className="flex justify-center gap-1">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button key={n} onClick={() => setRating(n)} className="text-2xl">
+                {n <= rating ? <Star className='fill-amber-400 stroke-0'/> : <Star className='fill-slate-200 stroke-0'/>}
+              </button>
+            ))}
+          </div>
+          <Textarea placeholder="Share your experience..." value={comment} onChange={(e) => setComment(e.target.value)} rows={3} />
+          {submitReview.error && (
+            <p className="text-sm font-semibold text-destructive">
+              {submitReview.error.response?.data?.errors?.product_id?.[0] ?? 'Could not submit review.'}
+            </p>
+          )}
+          <Button onClick={handleSubmitReview} disabled={submitReview.isPending} className="w-full bg-action hover:bg-darker">
+            Submit Review
+          </Button>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={complaintOpen} onOpenChange={setComplaintOpen}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Report an issue with this order</DialogTitle></DialogHeader>
+          {uniqueSellers.length > 1 && (
+            <div className="space-y-1">
+              <Label className="text-xs">Which seller is this about?</Label>
+              <Select
+                value={complaintForm?.seller_id?.toString()}
+                onValueChange={(v) => setComplaintForm({ ...complaintForm, seller_id: v })}
+              >
+                <SelectTrigger className="w-full"><SelectValue placeholder="Select a seller" /></SelectTrigger>
+                <SelectContent>
+                  {uniqueSellers.map((s) => (
+                    <SelectItem 
+                    key={s.id} 
+                    value={s.id}
+                    className="data-highlighted:bg-action data-highlighted:text-background! data-highlighted:**:text-background!"
+                    >{s.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
+          <Input
+            placeholder="The Subject"
+            value={complaintForm.subject}
+            onChange={(e) => setComplaintForm({ ...complaintForm, subject: e.target.value })}
+            required
+          />
+          {fileComplaint.error &&
+            <p className="text-sm font-semibold text-destructive">
+              {fileComplaint.error.response?.data?.errors.subject[0] ?? 'Could not submit review.'}
+            </p>
+          }
+          <Textarea
+            placeholder="Describe the issue..."
+            value={complaintForm.description}
+            onChange={(e) => setComplaintForm({ ...complaintForm, description: e.target.value })}
+            rows={4}
+            required
+          />
+          {fileComplaint.error &&
+            <p className="text-sm font-semibold text-destructive">
+              {fileComplaint.error.response?.data?.errors.description[0] ?? 'Could not submit review.'}
+            </p>
+          }
+          <Button onClick={handleFileComplaint} disabled={fileComplaint.isPending || (uniqueSellers.length > 1 && !complaintForm.seller_id)} className="w-ful bg-action hover:bg-darkerl">
+            Submit
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

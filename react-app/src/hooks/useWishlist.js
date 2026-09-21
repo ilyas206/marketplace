@@ -1,5 +1,9 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toggleWishlist } from '../api/wishlist';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getWishlist, toggleWishlist } from '../api/wishlist';
+
+export const useWishlist = () => {
+  return useQuery({ queryKey: ['wishlist'], queryFn: getWishlist });
+};
 
 export const useToggleWishlist = (productSlug) => {
   const queryClient = useQueryClient();

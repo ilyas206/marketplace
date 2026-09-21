@@ -3,6 +3,7 @@ import { useSellerProducts } from '../../hooks/useSellerProducts';
 import { useSellerOrderItems } from '../../hooks/useSellerOrders';
 import { useIncome } from '../../hooks/useSellerStats';
 import { Skeleton } from '@/components/ui/skeleton';
+import { HandCoins, PackageOpen, Shirt } from 'lucide-react';
 
 export default function SellerDashboard() {
   const { data: products, isLoading: loadingProducts } = useSellerProducts({ per_page: 1 });
@@ -13,18 +14,21 @@ export default function SellerDashboard() {
 
   const cards = [
     {
+      icon: <Shirt size={35} className='text-darker mx-auto' />,
       label: 'Total Products',
       value: products?.total,
       loading: loadingProducts,
       link: '/seller/products',
     },
     {
+      icon: <PackageOpen size={35} className='text-darker mx-auto' />,
       label: 'Pending Orders',
       value: pendingOrders?.total,
       loading: loadingOrders,
       link: '/seller/orders',
     },
     {
+      icon: <HandCoins size={35} className='text-darker mx-auto' />,
       label: 'Income (this month)',
       value: totalIncome ? `${totalIncome.toFixed(2)} MAD` : '0 MAD',
       loading: loadingIncome,
@@ -43,7 +47,8 @@ export default function SellerDashboard() {
             to={card.link}
             className="rounded-lg border border-borders p-6 hover:shadow-sm"
           >
-            <p className="text-sm text-slate-500">{card.label}</p>
+            {card.icon}
+            <p className="text-sm mt-3 text-slate-500">{card.label}</p>
             {card.loading ? (
               <Skeleton className="mt-2 h-8 w-16" />
             ) : (

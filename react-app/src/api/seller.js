@@ -55,3 +55,8 @@ export const getSellerApplicationStatus = async () => {
   const { data } = await api.get('/seller/application-status');
   return data;
 };
+
+export const getSellerComplaints = async (params) => {
+  const { data } = await api.get('/seller/complaints', { params });
+  return data;
+};

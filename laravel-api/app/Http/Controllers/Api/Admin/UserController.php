@@ -28,7 +28,7 @@ class UserController extends Controller
         $user->update(['is_suspended' => ! $user->is_suspended]);
 
         return response()->json([
-            'message' => $user->is_suspended ? 'User suspended.' : 'User reinstated.',
+            'message' => $user->is_suspended ? 'User suspended successfully.' : 'User reinstated successfully.',
             'is_suspended' => $user->is_suspended,
         ]);
     }

@@ -21,6 +21,16 @@ class ReviewController extends Controller
         return ReviewResource::collection($reviews);
     }
 
+    public function mine(Request $request)
+    {
+        $reviews = Review::where('buyer_id', $request->user()->id)
+            ->with('product:id,title,slug')
+            ->latest()
+            ->paginate(10);
+
+        return response()->json($reviews);
+    }
+
     public function store(StoreReviewRequest $request)
     {
         // updateOrCreate: the DB unique constraint (product_id + buyer_id) from Step 21
@@ -40,6 +50,6 @@ class ReviewController extends Controller
 
         $review->delete();
 
-        return response()->json(['message' => 'Review deleted.']);
+        return response()->json(['message' => 'Review deleted successfully.']);
     }
 }

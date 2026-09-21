@@ -1,11 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import * as messagesApi from '../api/messages';
 
-export const useConversations = () => {
+export const useConversations = (options = {}) => {
   return useQuery({
     queryKey: ['conversations'],
     queryFn: messagesApi.getConversations,
     refetchInterval: 15000, // light polling — no websockets set up, this keeps unread counts reasonably fresh
+    ...options,
   });
 };
 

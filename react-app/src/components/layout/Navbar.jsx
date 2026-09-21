@@ -11,26 +11,28 @@ export default function Navbar() {
   const logout = useLogout();
   const itemsCount = useCartStore((s) => s.itemsCount);
 
-  const { data: conversations } = useConversations();
+  const { data: conversations } = useConversations({ enabled: isAuthenticated() });
   const totalUnread = conversations?.reduce((sum, c) => sum + c.unread_count, 0) ?? 0;
 
   return (
-    <nav className="flex items-center justify-between bg-action text-background p-3 text-sm">
+    <nav className="flex items-center justify-between bg-action text-background p-2 text-sm">
       <Link to="/" className='w-3/6'>
         <img src="/logo.png" className='w-1/5'/>
       </Link>
 
       <div className="flex items-center justify-evenly w-3/6">
-        <Link to="/cart" className='flex items-center gap-1 font-medium'>
-          {itemsCount}
-          <ShoppingCart size={22} />
-        </Link>
+        {
+          (!isAuthenticated() || (!hasRole('seller') && !hasRole('admin'))) && <Link to="/cart" className='flex items-center gap-1 font-medium'>
+            {itemsCount}
+            <ShoppingCart size={22} />
+          </Link>
+        }
 
         {isAuthenticated() ? (
           <>
+            {(hasRole('buyer') && !hasRole('seller')) && <Link to="/buyer/orders" className='font-medium'>Buyer Portal</Link>}
             {hasRole('seller') && <Link to="/seller/dashboard" className='font-medium'>Seller Dashboard</Link>}
-            {hasRole('admin') && <Link to="/admin/dashboard" className='font-medium'>Admin</Link>}
-            {hasRole('buyer') && <Link to="/orders" className='font-medium'>My Orders</Link>}
+            {hasRole('admin') && <Link to="/admin/dashboard" className='font-medium'>Admin Dashboard</Link>}
             <Link to="/messages" className="relative font-medium">
               Messages
               {totalUnread > 0 && (

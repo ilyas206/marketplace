@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Dot, MessagesSquare } from "lucide-react";
+import { toast } from "sonner";
 
 const STATUS_LABELS = {
   pending: { label: 'Pending', color: 'bg-slate-100 text-slate-700' },
@@ -25,15 +26,15 @@ const STATUS_LABELS = {
 // since diverging here would let the UI show actions the API will reject
 const NEXT_ACTIONS = {
   pending: [
-    { status: 'confirmed', label: 'Confirm order', variant: 'default' },
-    { status: 'cancelled', label: 'Cancel order', variant: 'destructive' },
+    { status: 'confirmed', label: 'Confirm order', className: 'text-action bg-action/20 hover:bg-action/30' },
+    { status: 'cancelled', label: 'Cancel order', className: 'text-destructive bg-destructive/20 hover:bg-destructive/30' },
   ],
   confirmed: [
-    { status: 'shipped', label: 'Mark as shipped', variant: 'default' },
-    { status: 'cancelled', label: 'Cancel order', variant: 'destructive' },
+    { status: 'shipped', label: 'Mark as shipped', className: 'text-action bg-action/20 hover:bg-action/30' },
+    { status: 'cancelled', label: 'Cancel order', className: 'text-destructive bg-destructive/20 hover:bg-destructive/30' },
   ],
   shipped: [
-    { status: 'delivered', label: 'Mark as delivered', variant: 'default' },
+    { status: 'delivered', label: 'Mark as delivered', className: 'text-action bg-action/20 hover:bg-action/30' },
   ],
   delivered: [],
   cancelled: [],
@@ -46,7 +47,15 @@ export default function SellerOrderItems() {
   const updateStatus = useUpdateOrderItemStatus();
 
   const handleStatusChange = (itemId, status) => {
-    updateStatus.mutate({ itemId, status });
+    updateStatus.mutate({ itemId, status }, {
+      onSuccess: (response) => toast.success(response.message , {
+          style: {
+            background: 'var(--success)',
+            color: 'var(--background)',
+            border: 'transparent'
+          },
+        })
+    });
   };
 
   return (
@@ -97,10 +106,10 @@ export default function SellerOrderItems() {
                     <p className="font-medium text-darker">{item.product.title}</p>
                     <p className="flex items-center gap-1 justify-center text-sm text-slate-500 mt-2">
                       Qty <span className="font-semibold">{item.quantity}</span> <Dot/> Order <span className="font-semibold">#{item.order.id}</span> <Dot/> {' '}
-                      <span className="font-semibold">{new Date(item.order.created_at).toLocaleDateString()}</span>
+                      Date <span className="font-semibold">{new Date(item.order.created_at).toLocaleDateString()}</span>
                     </p>
                     <p className="flex items-center gap-1 justify-center mt-1 text-sm text-slate-500">
-                      Deliver to : <span className="font-semibold">{item.order.shipping_address}</span> <Dot/> <span className="font-semibold">{item.order.phone}</span>
+                      Deliver to : <span className="font-semibold">{item.order.buyer.name}</span> <Dot/> <span className="font-semibold">{item.order.shipping_address}</span> <Dot/> <span className="font-semibold">{item.order.phone}</span>
                     </p>
 
                     <div className="mt-5 flex justify-center gap-6">
@@ -110,7 +119,7 @@ export default function SellerOrderItems() {
                             <Button
                                 key={action.status}
                                 size="sm"
-                                variant={action.variant}
+                                className={action.className}
                                 disabled={updateStatus.isPending}
                                 onClick={() => handleStatusChange(item.id, action.status)}
                             >

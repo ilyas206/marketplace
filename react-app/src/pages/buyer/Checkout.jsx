@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../../hooks/useCart';
 import { useCheckout } from '../../hooks/useOrders';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,7 @@ export default function Checkout() {
     e.preventDefault();
     checkout.mutate(form, {
       onSuccess: (data) => {
-        navigate(`/orders/${data.order.id}`, { state: { justPlaced: true } });
+        navigate(`/buyer/orders/${data.order.id}`, { state: { justPlaced: true } });
       },
     });
   };
@@ -35,20 +35,14 @@ export default function Checkout() {
 
   if (!cart || cart.items.length === 0) {
     return (
-      <div className="flex flex-col justify-center items-center py-4 text-center">
-        <img src="empty_cart.jpg" alt="Your cart is empty" className='w-90 h-80 rounded-lg' />
-        <h3 className="text-2xl font-bold text-action">Your cart is empty — nothing to check out.</h3>
-        <Link to="/">
-          <Button className="bg-action hover:bg-darker mt-3">Browse products</Button>
-        </Link>
-      </div>
+      <img src="/no_checkout.png" alt="Nothing to checkout" className='mx-auto w-3/5 max-h-95 mt-6' />
     );
   }
 
   const errorMessage = checkout.error?.response?.data?.message;
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-8">
+    <div className="mx-auto max-w-4xl px-6 py-2">
       <h1 className="mb-6 text-xl font-bold text-action">Checkout</h1>
 
       <div className="grid grid-cols-1 gap-15 md:grid-cols-2">
