@@ -71,7 +71,7 @@ export default function ChatThread({ otherUserId, orderId }) {
                   : 'bg-lighter text-darker'
               }`}
             >
-              <p className=''>{msg.body}</p>
+              <p className='text-start'>{msg.body}</p>
               <div className='mt-1 text-xs flex items-center gap-1 justify-end'>
                 <p className={msg.is_mine ? 'text-white/70' : 'text-darker/70'}>
                     {new Date(msg.created_at).toLocaleTimeString([], {

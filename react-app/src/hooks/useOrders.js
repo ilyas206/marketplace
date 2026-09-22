@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { checkout, getOrders, getOrder } from '../api/orders';
+import { checkout, getOrders, getOrder, cancelOrderItem } from '../api/orders';
 import { useCartStore } from '../store/cartStore';
 
 export const useCheckout = () => {
@@ -31,5 +31,16 @@ export const useOrder = (orderId) => {
     queryKey: ['order', orderId],
     queryFn: () => getOrder(orderId),
     enabled: !!orderId,
+  });
+};
+
+export const useCancelOrderItem = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: cancelOrderItem,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['order'] });
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+    },
   });
 };

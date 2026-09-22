@@ -37,8 +37,10 @@ class ComplaintController extends Controller
 
     public function index(Request $request)
     {
-        return response()->json(
-            $request->user()->complaintsFiled()->latest()->paginate(10)
-        );
+        $complaints = $request->user()->complaintsFiled()->with('buyer:id,name', 'seller:id,name', 'order:id')
+            ->latest()
+            ->paginate(10);
+
+        return response()->json($complaints);
     }
 }

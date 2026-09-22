@@ -83,7 +83,7 @@ export default function AdminProducts() {
               </DialogDescription>
               <DialogFooter className="border-t-borders">
                   <DialogClose>
-                      <Button size="sm" variant="outline">Cancel</Button>
+                      <Button size="sm" variant="outline" className="w-full">Cancel</Button>
                   </DialogClose>
                   <Button 
                     size="sm"

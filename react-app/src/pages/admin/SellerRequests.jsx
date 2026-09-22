@@ -56,16 +56,16 @@ export default function SellerRequests() {
       )}
 
       {data && data.data.length === 0 && (
-        <img src="/no_pending_apps.png" alt="No pending applications." className='mx-auto w-3/5 max-h-95 mt-6' />
+        <img src="/no_pending_apps.png" alt="No pending applications." className='mx-auto md:w-3/5 max-h-95 mt-6' />
       )}
 
       <div className="space-y-3">
         {data?.data.map((app) => (
           <div key={app.id} className="rounded-lg border border-slate-200 p-4">
-            <div className="flex items-center justify-between">
-              <div className="flex flex-col items-start">
+            <div className="flex flex-col gap-2 md:flex-row items-center justify-between">
+              <div className="flex flex-col items-center">
                 <p className="font-semibold text-slate-900 mb-1">{app.business_name}</p>
-                <p className="flex items-center font-semibold text-sm text-slate-500">{app.user.name} <Dot/> {app.user.email}</p>
+                <p className="flex flex-col md:flex-row items-center font-semibold text-sm text-slate-500">{app.user.name} <Dot/> {app.user.email}</p>
                 <p className="mt-1 text-sm font-light text-start text-slate-600">{app.description}</p>
               </div>
               <div className="flex gap-1">
@@ -108,7 +108,7 @@ export default function SellerRequests() {
       </Dialog>
 
       {/* Reject reason dialog */}
-      <Dialog open={!!rejectingId} onOpenChange={(open) => !open && setRejectingId(null)}>
+      <Dialog open={!!rejectingId} onOpenChange={(open) => !open && (setRejectingId(null), setReason(''))}>
         <DialogContent>
           <DialogHeader><DialogTitle>Reject application</DialogTitle></DialogHeader>
           <Textarea

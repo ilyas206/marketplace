@@ -16,39 +16,39 @@ export default function Navbar() {
 
   return (
     <nav className="flex items-center justify-between bg-action text-background p-2 text-sm">
-      <Link to="/" className='w-3/6'>
-        <img src="/logo.png" className='w-1/5'/>
+      <Link to="/" className='w-1/6 md:w-3/6'>
+        <img src="/logo.png" className='md:w-1/5'/>
       </Link>
 
-      <div className="flex items-center justify-evenly w-3/6">
+      <div className="flex items-center justify-evenly w-5/6 md:w-3/6">
         {
-          (!isAuthenticated() || (!hasRole('seller') && !hasRole('admin'))) && <Link to="/cart" className='flex items-center gap-1 font-medium'>
+          (!isAuthenticated() || (!hasRole('seller') && !hasRole('admin'))) && <Link to="/cart" className='flex items-center gap-1 font-medium text-xs md:text-md'>
             {itemsCount}
-            <ShoppingCart size={22} />
+            <ShoppingCart size={18} />
           </Link>
         }
 
         {isAuthenticated() ? (
           <>
-            {(hasRole('buyer') && !hasRole('seller')) && <Link to="/buyer/orders" className='font-medium'>Buyer Portal</Link>}
-            {hasRole('seller') && <Link to="/seller/dashboard" className='font-medium'>Seller Dashboard</Link>}
-            {hasRole('admin') && <Link to="/admin/dashboard" className='font-medium'>Admin Dashboard</Link>}
-            <Link to="/messages" className="relative font-medium">
+            {(hasRole('buyer') && !hasRole('seller')) && <Link to="/buyer/orders" className='font-medium text-xs md:text-md'>Buyer Portal</Link>}
+            {hasRole('seller') && <Link to="/seller/dashboard" className='font-medium text-xs md:text-md'>Seller Dashboard</Link>}
+            {hasRole('admin') && <Link to="/admin/dashboard" className='font-medium text-xs md:text-md'>Admin Dashboard</Link>}
+            <Link to="/messages" className="relative font-medium text-xs md:text-md">
               Messages
               {totalUnread > 0 && (
-                <span className="absolute -right-2 -top-2 flex h-4 w-4 items-center justify-center rounded-full bg-lighter text-darker text-[10px] font-bold">
+                <span className="absolute -right-2 -top-2 flex h-3 w-3 items-center justify-center rounded-full bg-lighter text-darker text-[10px] font-bold">
                   {totalUnread}
                 </span>
               )}
             </Link>
-            <Button className='bg-darker' onClick={() => logout.mutate()}>
+            <Button className='bg-darker text-xs md:text-md' onClick={() => logout.mutate()}>
               Logout
             </Button>
           </>
         ) : (
           <>
-            <Link to="/login" className='font-medium'>Login</Link>
-            <Link to="/register" className='font-medium'>Register</Link>
+            <Link to="/login" className='font-medium text-xs md:text-md'>Login</Link>
+            <Link to="/register" className='font-medium text-xs md:text-md'>Register</Link>
           </>
         )}
       </div>

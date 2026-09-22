@@ -42,7 +42,7 @@ export default function Checkout() {
   const errorMessage = checkout.error?.response?.data?.message;
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-2">
+    <div className="mx-auto max-w-4xl md:px-4 py-2">
       <h1 className="mb-6 text-xl font-bold text-action">Checkout</h1>
 
       <div className="grid grid-cols-1 gap-15 md:grid-cols-2">

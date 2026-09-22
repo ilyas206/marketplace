@@ -32,6 +32,7 @@ Route::middleware(['auth:sanctum', 'suspended'])->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'store']);
     Route::get('/orders', [OrderController::class, 'index']);
     Route::get('/orders/{order}', [OrderController::class, 'show']);
+    Route::patch('/order-items/{orderItem}/cancel', [OrderController::class, 'cancelItem']);
     // Buyer-side complaints
     Route::post('/complaints', [ComplaintController::class, 'store']);
     Route::get('/complaints', [ComplaintController::class, 'index']);
@@ -91,6 +92,7 @@ Route::get('/categories', [AdminCategoryController::class, 'index']);
 
 Route::get('/products', [ProductController::class, 'index']);
 Route::get('/products/{slug}/related', [ProductController::class, 'related']);
+Route::get('/sellers/{sellerId}/products', [ProductController::class, 'bySeller']);
 
 // Public — reviews visible to guests on product page
 Route::get('/products/{productSlug}/reviews', [ReviewController::class, 'index']);

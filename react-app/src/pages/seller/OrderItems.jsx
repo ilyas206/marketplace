@@ -64,7 +64,7 @@ export default function SellerOrderItems() {
         <h1 className="text-xl font-semibold text-action">Incoming Orders</h1>
 
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-45">
+          <SelectTrigger className="w-30 md:w-45">
             <SelectValue placeholder="All statuses" />
           </SelectTrigger>
           <SelectContent>
@@ -87,7 +87,7 @@ export default function SellerOrderItems() {
       )}
 
       {data && data.data.length === 0 && (
-        <img src="/no_matching_orders.png" alt="No orders match this filter" className='mx-auto w-3/5' />
+        <img src="/no_matching_orders.png" alt="No orders match this filter" className='mx-auto md:w-3/5' />
       )}
 
       {data && data.data.length > 0 && (
@@ -101,18 +101,18 @@ export default function SellerOrderItems() {
                 key={item.id}
                 className="rounded-lg border border-borders p-4"
               >
-                <div className="flex justify-between">
+                <div className="flex flex-col gap-4 md:flex-row items-center md:items-start justify-between">
                   <div className="flex-1">
-                    <p className="font-medium text-darker">{item.product.title}</p>
-                    <p className="flex items-center gap-1 justify-center text-sm text-slate-500 mt-2">
+                    <p className="flex items-center justify-center gap-2 font-medium text-darker">{item.product.title} <Badge className={`hidden md:block ${status.color}`}>{status.label}</Badge></p>
+                    <p className={`flex items-center gap-1 justify-center text-sm p-2 rounded-md mt-2 ${status.color}`}>
                       Qty <span className="font-semibold">{item.quantity}</span> <Dot/> Order <span className="font-semibold">#{item.order.id}</span> <Dot/> {' '}
                       Date <span className="font-semibold">{new Date(item.order.created_at).toLocaleDateString()}</span>
                     </p>
-                    <p className="flex items-center gap-1 justify-center mt-1 text-sm text-slate-500">
-                      Deliver to : <span className="font-semibold">{item.order.buyer.name}</span> <Dot/> <span className="font-semibold">{item.order.shipping_address}</span> <Dot/> <span className="font-semibold">{item.order.phone}</span>
+                    <p className={`flex flex-col md:flex-row items-center gap-1 justify-center text-sm p-2 rounded-md mt-2 ${status.color}`}>
+                      {item.item_status === 'delivered' ? 'Delivered' : 'Deliver'} to : <span className="font-semibold">{item.order.buyer.name}</span> <Dot/> <span className="font-semibold">{item.order.shipping_address}</span> <Dot/> <span className="font-semibold">{item.order.phone}</span>
                     </p>
 
-                    <div className="mt-5 flex justify-center gap-6">
+                    <div className="mt-5 flex flex-col md:flex-row justify-center items-center gap-2 md:gap-6">
                       {actions.length > 0 && (
                         <div className='flex gap-1'>
                           {actions.map((action) => (
@@ -144,7 +144,7 @@ export default function SellerOrderItems() {
                             </p>
                         )}
                   </div>
-                  <Badge className={status.color}>{status.label}</Badge>
+                  <Badge className={`block md:hidden ${status.color}`}>{status.label}</Badge>
                 </div>
               </div>
             );

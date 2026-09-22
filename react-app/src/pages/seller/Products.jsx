@@ -119,7 +119,7 @@ export default function SellerProducts() {
       )}
 
       {data && data.data.length === 0 && (
-        <img src="/no_products.png" alt="No products added" className="mx-auto w-3/5 max-h-80" />
+        <img src="/no_products.png" alt="No products added" className="mx-auto md:w-3/5 max-h-80" />
       )}
 
       {data && data.data.length > 0 && (
@@ -198,7 +198,7 @@ export default function SellerProducts() {
             </DialogDescription>
             <DialogFooter className="border-t-borders">
                 <DialogClose>
-                    <Button size="sm" variant="outline">Cancel</Button>
+                    <Button size="sm" variant="outline" className="w-full">Cancel</Button>
                 </DialogClose>
                 <Button onClick={() => handleDelete(deletingProduct?.id)} disabled={deleteProduct.isPending} size="sm" className="bg-destructive/50 hover:bg-destructive">
                     {

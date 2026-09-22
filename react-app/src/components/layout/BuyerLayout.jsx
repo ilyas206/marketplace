@@ -4,14 +4,15 @@ const links = [
   { to: '/buyer/orders', label: 'My Orders' },
   { to: '/buyer/wishlist', label: 'My Wishlist' },
   { to: '/buyer/my-reviews', label: 'My Reviews' },
+  { to: '/buyer/file-complaint', label: 'File a Complaint' },
   { to: '/buyer/my-complaints', label: 'My Complaints' },
   { to: '/buyer/become-seller', label: 'Become a Seller' },
 ];
 
 export default function AdminLayout() {
   return (
-    <div className="mx-auto flex max-w-7xl gap-8 px-6 py-7">
-      <aside className="w-48 h-full shrink-0 bg-lighter rounded-md p-2">
+    <div className="mx-auto flex flex-col md:flex-row max-w-7xl gap-8 px-6 py-7">
+      <aside className="w-full md:w-48 h-full shrink-0 bg-lighter rounded-md p-2">
         <nav className="space-y-3">
           {links.map((link) => (
             <NavLink

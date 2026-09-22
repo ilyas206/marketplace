@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { toast } from "sonner";
-import { Dot, Heart, ImageOff, ShoppingCartPlus, Star, MessagesSquare } from 'lucide-react';
+import { Dot, Heart, ImageOff, ShoppingCartPlus, Star, MessagesSquare, Shirt } from 'lucide-react';
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -151,7 +151,7 @@ export default function ProductDetail() {
               {
                 (!hasRole('seller') && !hasRole('admin')) && <>
                   <Separator className="my-4 bg-borders" />
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1">
                     <div className="flex items-center rounded-md border border-borders">
                       <button
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -202,17 +202,25 @@ export default function ProductDetail() {
             <p className="text-sm text-slate-500">Sold by</p>
             <p className="font-medium text-slate-900">{product.seller.business_name}</p>
             <p className="text-sm text-slate-500">{product.seller.total_products} products</p>
-
-            {(isAuthenticated() && !hasRole('seller')) && (
-              <Button
+            <div className='flex flex-col md:flex-row items-center justify-center gap-2 mt-3'>
+              <Button 
                 variant="ghost"
                 size="sm"
-                className="mt-3"
-                onClick={() => navigate(`/messages/${product.seller.id}`)}
+                onClick={() => navigate(`/sellers/${product.seller.id}/products`)} 
               >
-                Message Seller <MessagesSquare />
+                View all Seller's products <Shirt />
               </Button>
-            )}
+
+              {(isAuthenticated() && !hasRole('seller')) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate(`/messages/${product.seller.id}`)}
+                >
+                  Message Seller <MessagesSquare />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -224,7 +232,7 @@ export default function ProductDetail() {
         </h2>
 
         {reviews && reviews.data.length === 0 && (
-          <img src="/no_reviews.png" alt="No reviews yet." className='mx-auto w-2/5 max-h-95 mt-8' />
+          <img src="/no_reviews.png" alt="No reviews yet." className='mx-auto md:w-2/5 max-h-95 mt-8' />
         )}
 
         {reviews && reviews.data.length > 0 && (

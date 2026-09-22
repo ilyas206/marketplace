@@ -44,22 +44,22 @@ export default function AdminComplaints() {
       )}
 
       {data && data.data.length === 0 && (
-        <img src="/no_complaints.png" alt="No complaints filed." className='mx-auto w-3/5 max-h-95 mt-8' />
+        <img src="/no_complaints.png" alt="No complaints filed." className='mx-auto md:w-3/5 max-h-95 mt-8' />
       )}
 
       <div className="space-y-3">
         {data?.data.map((c) => (
           <div key={c.id} className="rounded-lg border border-slate-200 p-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 md:flex-row items-center justify-between">
               <div className='space-y-3 max-w-2/3'>
                 <p className="font-semibold text-slate-900">{c.subject}</p>
-                <div className='flex items-center justify-center gap-1'>
+                <div className='flex flex-col gap-2 md:flex-row items-center justify-center'>
                   <Badge className="bg-destructive/80"><FaceAngry /> Buyer : {c.buyer.name}</Badge>
                   {
-                    c.seller && <><Dot className='text-action' /><Badge className="bg-action/80"><FaceNeutral /> Seller : {c.seller.name}</Badge></>
+                    c.seller && <><Badge className="bg-action/80"><FaceNeutral /> Seller : {c.seller.name}</Badge></>
                   }
                   {
-                    c.order && <><Dot className='text-action'/> <Badge>Order #{c.order.id}</Badge></>
+                    c.order && <><Badge>Order #{c.order.id}</Badge></>
                   }
                 </div>
 
@@ -70,7 +70,7 @@ export default function AdminComplaints() {
                   </Button>
                 )}
               </div>
-              <div className='flex flex-col gap-1 max-w-1/3'>
+              <div className='flex flex-col gap-1 md:max-w-1/3'>
                 <Badge className={STATUS_COLORS[c.status]}>{c.status.replace('_', ' ')}</Badge>
                 {c.admin_response && (
                   <p className={`text-xs rounded p-2 ${c.status === 'resolved' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
@@ -83,7 +83,7 @@ export default function AdminComplaints() {
         ))}
       </div>
 
-      <Dialog open={!!resolvingId} onOpenChange={(open) => !open && setResolvingId(null)}>
+      <Dialog open={!!resolvingId} onOpenChange={(open) => !open && (setResolvingId(null), setResponse(''))}>
         <DialogContent>
           <DialogHeader><DialogTitle>Respond to complaint</DialogTitle></DialogHeader>
           <Textarea

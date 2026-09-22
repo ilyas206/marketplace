@@ -19,18 +19,19 @@ export default function ProductCard({ product }) {
             className="h-full w-full object-cover"
           />
         ) : (
-          <div className="flex flex-col h-full items-center justify-center gap-2 text-slate-400">
-            <ImageOff size={50} />
+          <div className="flex flex-col h-full items-center justify-center gap-2 text-xs md:text-lg text-slate-400">
+            <ImageOff size={35} />
             No image
           </div>
         )}
+        
 
         {isOutOfStock && (
           <div className="absolute inset-0 bg-white/70"></div>
         )}
 
         {hasDiscount && !isOutOfStock && (
-          <Badge className="absolute left-2 top-2 bg-success font-bold">
+          <Badge className="absolute left-2 top-2 bg-success text-xs font-bold">
             -{Math.round((1 - product.discount_price / product.price) * 100)}%
           </Badge>
         )}
@@ -46,7 +47,7 @@ export default function ProductCard({ product }) {
             isOutOfStock 
             ? <Badge variant="secondary">Out of stock</Badge> 
             : <>
-              <span className={`font-semibold ${hasDiscount ? 'text-success' : 'text-orange'}`}>
+              <span className={`font-semibold text-xs md:text-lg ${hasDiscount ? 'text-success' : 'text-orange'}`}>
                 {product.final_price.toFixed(2)} MAD
               </span>
               {hasDiscount && (
@@ -60,7 +61,7 @@ export default function ProductCard({ product }) {
 
         {product.average_rating > 0 && (
           <div className="flex items-center justify-center gap-1 text-action">
-            <Star size={16} className='fill-amber-400 stroke-0' /> 
+            <Star size={15} className='fill-amber-400 stroke-0' /> 
             <span className='text-xs font-medium'>{product.average_rating} rating</span>
           </div>
         )}

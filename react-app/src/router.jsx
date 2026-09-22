@@ -16,6 +16,7 @@ import BecomeSeller from './pages/buyer/BecomeSeller';
 import MyReviews from './pages/buyer/MyReviews';
 import MyComplaints from './pages/buyer/MyComplaints';
 import Wishlist from './pages/buyer/Wishlist';
+import SellerStorefront from './pages/buyer/SellerStorefront';
 
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
@@ -35,6 +36,7 @@ import AdminComplaints from './pages/admin/Complaints';
 
 import { useCart } from './hooks/useCart';
 import { Toaster } from "@/components/ui/sonner";
+import FileComplaint from './pages/buyer/FileComplaint';
 
 function RootLayout() {
   useCart(); // fetches cart on app load, keeps itemsCount in sync via onSuccess
@@ -54,6 +56,7 @@ export const router = createBrowserRouter([
       // Public routes — no login required (matches your "guests see full details" decision)
       { path: '/', element: <Home /> },
       { path: '/products/:slug', element: <ProductDetail /> },
+      { path: '/sellers/:sellerId/products', element: <SellerStorefront /> },
       { path: '/cart', element: <Cart /> },
       { path: '/login', element: <Login /> },
       { path: '/register', element: <Register /> },
@@ -80,6 +83,7 @@ export const router = createBrowserRouter([
               { path: '/buyer/become-seller', element: <BecomeSeller /> },
               { path: '/buyer/my-reviews', element: <MyReviews /> },
               { path: '/buyer/my-complaints', element: <MyComplaints /> },
+              { path: '/buyer/file-complaint', element: <FileComplaint /> },
               { path: '/buyer/wishlist', element: <Wishlist /> },
             ]
           }

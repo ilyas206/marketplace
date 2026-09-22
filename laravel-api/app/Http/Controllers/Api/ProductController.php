@@ -42,4 +42,13 @@ class ProductController extends Controller
 
         return ProductListResource::collection($related);
     }
+
+    public function bySeller(int $sellerId)
+    {
+        $products = Product::available()
+            ->where('seller_id', $sellerId)
+            ->paginate(12);
+
+        return ProductListResource::collection($products);
+    }
 }

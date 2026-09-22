@@ -32,7 +32,7 @@ export default function AdminUsers() {
           placeholder="Search name or email..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="max-w-xs text-darker"
+          className="w-2/3 md:w-1/3 text-darker"
         />
       </div>
 
@@ -89,7 +89,7 @@ export default function AdminUsers() {
                         </DialogDescription>
                         <DialogFooter className="border-t-borders">
                             <DialogClose>
-                                <Button size="sm" variant="outline">Cancel</Button>
+                                <Button size="sm" variant="outline" className="w-full">Cancel</Button>
                             </DialogClose>
                             <Button
                               disabled={toggleSuspension.isPending}

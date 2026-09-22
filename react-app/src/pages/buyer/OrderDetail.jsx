@@ -3,14 +3,15 @@ import { useParams, useLocation, Link, useNavigate } from 'react-router-dom';
 import { useOrder } from '../../hooks/useOrders';
 import { useSubmitReview } from '../../hooks/useReviews';
 import { useFileComplaint } from '../../hooks/useComplaints';
+import { useCancelOrderItem } from '../../hooks/useOrders';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { Dot, MessagesSquare, Star, TriangleAlert, UserStar } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { CircleX, Dot, MessagesSquare, Star, TriangleAlert, UserStar } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
@@ -29,9 +30,11 @@ export default function OrderDetail() {
   const navigate = useNavigate();
   const { data: order, isLoading } = useOrder(id);
   const [reviewingProduct, setReviewingProduct] = useState(null);
+  const [cancelingItem, setCancelingItem] = useState(null);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
   const submitReview = useSubmitReview();
+  const cancelItem = useCancelOrderItem();
 
   // Derive the unique sellers involved in this order
   const uniqueSellers = useMemo(() => (
@@ -85,7 +88,7 @@ export default function OrderDetail() {
   if (!order) return null;
 
   return (
-    <div className="mx-auto px-6 py-2">
+    <div className="mx-auto md:px-4 py-2">
       {location.state?.justPlaced && (
         <div className="mb-6 rounded-lg bg-success/10 p-4 text-success font-semibold">
           Order placed successfully. You'll be notified as it progresses.
@@ -119,7 +122,7 @@ export default function OrderDetail() {
           return (
             <div
               key={item.id}
-              className="flex items-center justify-between rounded-lg border border-slate-200 p-4"
+              className="flex flex-col-reverse gap-3 md:flex-row items-center justify-between rounded-lg border border-slate-200 p-4"
             >
               <div>
                 <Link
@@ -128,7 +131,7 @@ export default function OrderDetail() {
                 >
                   {item.product.title}
                 </Link>
-                <p className="flex items-center gap-1 mt-2 text-sm text-slate-500">
+                <p className="flex  items-center gap-1 mt-2 text-sm text-slate-500">
                   Qty <span className='font-semibold'>{item.quantity}</span> <Dot size={20}/> <span className='font-semibold'>{item.unit_price}</span> MAD each <Dot size={20}/> Sold by <span className='font-semibold'>{item.seller.name}</span>
                 </p>
                 <div className='flex items-center justify-center gap-1'>
@@ -144,10 +147,20 @@ export default function OrderDetail() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="mt-3"
+                      className="mt-3 hover:text-amber-400"
                       onClick={() => setReviewingProduct({ id: item.product.id, })}
                     >
                       Write a review <UserStar />
+                    </Button>
+                  )}
+                  {item.item_status === 'pending' && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-3 hover:text-destructive"
+                      onClick={() => setCancelingItem(item.id)}
+                    >
+                      Cancel item <CircleX />
                     </Button>
                   )}
                 </div>
@@ -184,6 +197,46 @@ export default function OrderDetail() {
           <Button onClick={handleSubmitReview} disabled={submitReview.isPending} className="w-full bg-action hover:bg-darker">
             Submit Review
           </Button>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog 
+        open={!!cancelingItem} 
+        onOpenChange={(open) => !open && setCancelingItem(null)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className='text-darker'>Cancel Order Item</DialogTitle>
+          </DialogHeader>
+            <DialogDescription>
+                Are you sure you want to cancel this Item ?
+            </DialogDescription>
+            <DialogFooter className="border-t-borders">
+                <DialogClose>
+                    <Button size="sm" variant="outline" className="w-full">Return</Button>
+                </DialogClose>
+                <Button 
+                  onClick={() => {
+                    cancelItem.mutate(cancelingItem, {
+                      onSuccess: (response) => {
+                        setCancelingItem(null)
+                        toast.error(response.message, {
+                          style: {
+                            background: 'var(--destructive)',
+                            color: 'var(--background)',
+                            border: 'transparent'
+                          },
+                        })
+                      }
+                    })
+                  }} 
+                  disabled={cancelItem.isPending} 
+                  size="sm" 
+                  className="bg-destructive/50 hover:bg-destructive">
+                    {
+                        cancelItem.isPending ? 'Canceling...' : 'Cancel'
+                    }
+                </Button>
+            </DialogFooter>
         </DialogContent>
       </Dialog>
 

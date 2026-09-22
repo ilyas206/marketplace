@@ -53,7 +53,7 @@ export default function SellerStats() {
         {loadingIncome && <Skeleton className="h-64 w-full" />}
 
         {income && income.length === 0 && (
-          <img src="/no_delivered_orders.png" alt="No delivered orders yet — income reflects only completed sales." className='mx-auto w-3/5 max-h-95' />
+          <img src="/no_delivered_orders.png" alt="No delivered orders yet — income reflects only completed sales." className='mx-auto md:w-3/5 max-h-95' />
         )}
 
         {income && income.length > 0 && (
@@ -77,7 +77,7 @@ export default function SellerStats() {
           {loadingBestSelling && <Skeleton className="h-64 w-full" />}
 
           {bestSelling && bestSelling.length === 0 && (
-            <img src="/no_sales.png" alt="No sales yet." className='mx-auto w-3/5 max-h-95' />
+            <img src="/no_sales.png" alt="No sales yet." className='mx-auto md:w-3/5 max-h-95' />
           )}
 
           {bestSelling && bestSelling.length > 0 && (
@@ -105,7 +105,7 @@ export default function SellerStats() {
           {loadingCategories && <Skeleton className="h-64 w-full" />}
 
           {topCategories && topCategories.length === 0 && (
-            <img src="/no_sales.png" alt="No sales yet." className='mx-auto w-3/5 max-h-95' />
+            <img src="/no_sales.png" alt="No sales yet." className='mx-auto md:w-3/5 max-h-95' />
           )}
 
           {topCategories && topCategories.length > 0 && (

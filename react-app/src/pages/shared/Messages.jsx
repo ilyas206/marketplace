@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useConversations } from '../../hooks/useMessages';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { Menu } from 'lucide-react';
 import ChatThread from '../../components/shared/ChatThread';
 
 export default function Messages() {
@@ -9,11 +12,12 @@ export default function Messages() {
   const { data: conversations, isLoading } = useConversations();
   const navigate = useNavigate();
   const orderId = searchParams.get('order') || undefined;
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
-    <div className="flex h-[calc(100dvh-73px)] min-h-0 overflow-hidden">
+    <div className="relative flex h-[calc(100dvh-73px)] min-h-0 overflow-hidden">
       {/* Conversation list */}
-      <aside className="w-72 shrink-0 overflow-y-auto border-r border-borders">
+      <aside className={`absolute inset-y-0 left-0 z-20 w-72 shrink-0 overflow-y-auto border-r border-borders bg-white transition-transform duration-200 md:static md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <h1 className="border-b border-borders px-4 py-3 font-semibold text-action">
           Conversations
         </h1>
@@ -29,7 +33,10 @@ export default function Messages() {
         {conversations?.map((conv) => (
           <button
             key={conv.user.id}
-            onClick={() => navigate(`/messages/${conv.user.id}`)}
+            onClick={() => {
+              navigate(`/messages/${conv.user.id}`);
+              setIsSidebarOpen(false);
+            }}
             className={`flex w-full items-center justify-between border-b border-slate-100 cursor-pointer px-4 py-3 text-left ${
               userId === conv.user.id.toString() ? 'bg-lighter' : 'hover:bg-slate-200 transition duration-200'
             }`}
@@ -48,7 +55,18 @@ export default function Messages() {
       </aside>
 
       {/* Active thread */}
-      <div className="min-w-0 min-h-0 flex-1 overflow-hidden">
+      <div className="relative min-w-0 min-h-0 flex-1 overflow-hidden">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="absolute right-3 top-3 z-20 md:hidden"
+          onClick={() => setIsSidebarOpen((isOpen) => !isOpen)}
+          aria-label="Toggle conversations"
+          aria-expanded={isSidebarOpen}
+        >
+          <Menu />
+        </Button>
         {userId ? (
           <ChatThread otherUserId={userId} orderId={orderId} />
         ) : (

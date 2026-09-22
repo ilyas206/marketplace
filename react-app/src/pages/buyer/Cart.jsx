@@ -26,7 +26,7 @@ export default function Cart() {
 
   if (!cart || cart.items.length === 0) {
     return (
-      <img src="/empty_cart.png" alt="Your cart is empty" className='mx-auto w-3/5 max-h-95 mt-6' />
+      <img src="/empty_cart.png" alt="Your cart is empty" className='mx-auto md:w-3/5 max-h-95 mt-6' />
     );
   }
 
@@ -51,9 +51,9 @@ export default function Cart() {
         {cart.items.map((item) => (
           <div
             key={item.id}
-            className="relative flex items-center gap-4 rounded-lg border border-borders p-4"
+            className="relative flex flex-col md:flex-row items-center gap-4 rounded-lg border border-borders p-4"
           >
-            <div className="h-20 w-20 shrink-0 overflow-hidden rounded bg-borders">
+            <div className="h-30 w-30 md:h-20 md:w-20 shrink-0 overflow-hidden rounded bg-borders">
               {item.product.image ? (
                 <img
                   src={`http://127.0.0.1:8000/storage/${item.product.image}`}

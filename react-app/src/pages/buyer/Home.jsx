@@ -43,7 +43,7 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-7xl px-6 py-8">
       {
-        user && <h2 className="text-2xl font-bold text-start text-action">Hi, {user.name}</h2>
+        user && <h2 className="text-2xl font-bold text-center md:text-start text-action">Hi, {user.name}</h2>
       }
       <div className="my-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <Input
@@ -83,7 +83,7 @@ export default function Home() {
       </div>
 
       {isLoading && (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid gap-2 md:gap-4 grid-cols-2 md:grid-cols-4">
           {Array.from({ length: 8 }).map((_, i) => (
             <Skeleton key={i} className="aspect-square w-full rounded-lg" />
           ))}
@@ -91,15 +91,15 @@ export default function Home() {
       )}
 
       {isError && (
-        <img src="/products_loading_error.png" alt="Couldn't load products. Try refreshing the page.." className='mx-auto w-2/5 max-h-95' />
+        <img src="/products_loading_error.png" alt="Couldn't load products. Try refreshing the page.." className='mx-auto md:w-2/5 max-h-95' />
       )}
 
       {data && data.data.length === 0 && (
-        <img src="/no_matching_products.png" alt="No products match your search." className='mx-auto w-2/5 max-h-95' />
+        <img src="/no_matching_products.png" alt="No products match your search." className='mx-auto md:w-2/5 max-h-95' />
       )}
 
       {data && data.data.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="grid gap-2 md:gap-4 grid-cols-2 md:grid-cols-4">
           {data.data.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

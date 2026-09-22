@@ -26,12 +26,12 @@ export default function OrderHistory() {
 
   if (!data || data.data.length === 0) {
     return (
-      <img src="no_orders.png" alt="No orders so far" className='mx-auto w-3/5 max-h-95 mt-7' />
+      <img src="no_orders.png" alt="No orders so far" className='mx-auto md:w-3/5 max-h-95 mt-7' />
     );
   }
 
   return (
-    <div className="mx-auto px-6 py-2">
+    <div className="mx-auto md:px-4 py-2">
       <h1 className="text-xl font-semibold text-action">My Orders</h1>
 
       <div className="mt-7 space-y-3">
@@ -43,7 +43,7 @@ export default function OrderHistory() {
           >
             <div>
               <p className="font-medium text-slate-900">Order #{order.id}</p>
-              <p className="flex items-center gap-1 mt-1 text-sm text-slate-500">
+              <p className="flex items-center gap-1 font-semibold mt-1 text-sm text-slate-500">
                 {new Date(order.created_at).toLocaleDateString()} <Dot size={20}/> {order.items.length} item(s)
               </p>
             </div>

@@ -165,7 +165,7 @@ export default function Categories() {
               </DialogDescription>
               <DialogFooter className="border-t-borders">
                   <DialogClose>
-                      <Button size="sm" variant="outline">Cancel</Button>
+                      <Button size="sm" variant="outline" className="w-full">Cancel</Button>
                   </DialogClose>
                   <Button onClick={() => handleDelete(deletingCategory?.id)} disabled={deleteCategory.isPending} size="sm" className="bg-destructive/50 hover:bg-destructive">
                       {
@@ -192,30 +192,30 @@ export default function Categories() {
                 <Badge variant="secondary">{cat.products_count} products</Badge>
               </div>
               <div className='flex items-center gap-1'>
-                <Button size="sm" onClick={() => { setEditingCategory(cat); setEditDialogOpen(true); }} className="text-action bg-action/20 hover:bg-action/30">
+                <Button size="xs" onClick={() => { setEditingCategory(cat); setEditDialogOpen(true); }} className="text-action bg-action/20 hover:bg-action/30">
                     Edit
                 </Button>
-                <Button variant="destructive" size="sm" onClick={() => setDeletingCategory(cat)}>
+                <Button variant="destructive" size="xs" onClick={() => setDeletingCategory(cat)}>
                     Delete
                 </Button>
               </div>
             </div>
 
             {cat.children?.length > 0 && (
-              <div className="mt-3 ml-4 space-y-2 border-l border-slate-200 pl-4">
+              <div className="mt-3 md:ml-4 space-y-2 border-l border-slate-200 pl-4">
                 {cat.children.map((child) => (
                   <div key={child.id} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm text-slate-700">{child.name}</span>
+                      <span className="text-xs md:text-sm text-slate-700">{child.name}</span>
                       <Badge variant="secondary" className="text-xs">
                         {child.products_count} products
                       </Badge>
                     </div>
                     <div className='flex items-center gap-1'>
-                        <Button size="sm" onClick={() => { setEditingCategory(child); setEditDialogOpen(true); }} className="text-action bg-action/20 hover:bg-action/30">
+                        <Button size="xs" onClick={() => { setEditingCategory(child); setEditDialogOpen(true); }} className="text-action bg-action/20 hover:bg-action/30">
                             Edit
                         </Button>
-                        <Button variant="destructive" size="sm" onClick={() => setDeletingCategory(child)}>
+                        <Button variant="destructive" size="xs" onClick={() => setDeletingCategory(child)}>
                             Delete
                         </Button>
                     </div>

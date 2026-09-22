@@ -27,7 +27,7 @@ export default function BecomeSeller() {
   // Not yet applied, or was rejected → show the form (rejected users can reapply, Step 36's updateOrCreate)
   if (status.status === 'not_applied' || status.status === 'rejected') {
     return (
-      <div className="mx-auto px-6 ">
+      <div className="mx-auto max-w-2xl md:px-6">
         <h1 className="mb-2 text-xl font-semibold text-action">Become a Seller</h1>
         <p className="mb-4 text-sm text-slate-500">
           Tell us about your business. Our team reviews every application before granting seller access.
@@ -86,18 +86,18 @@ export default function BecomeSeller() {
 
   // Pending or approved → show status, no form
   return (
-    <div className="mx-auto max-w-lg px-6 text-center">
+    <div className="mx-auto max-w-lg md:px-6 text-center">
       <h1 className="mb-2 text-xl font-semibold text-action">Application Status</h1>
 
       {status.status === 'pending' && (
         <>
             <p className="mt-2 text-xs text-slate-500">Submitted on {new Date(status.submitted_at).toLocaleDateString()}.</p>
-            <img src="/app_pending.png" alt="Under review." className='max-h-95 mt-6' />
+            <img src="/app_pending.png" alt="Under review." className='mt-6' />
         </>
       )}
 
       {status.status === 'approved' && (
-        <img src="/app_approved.png" alt="Approved." className='max-h-95 mt-6' />
+        <img src="/app_approved.png" alt="Approved." className='mt-6' />
       )}
     </div>
   );

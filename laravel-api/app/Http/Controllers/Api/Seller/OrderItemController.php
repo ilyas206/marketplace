@@ -43,6 +43,9 @@ class OrderItemController extends Controller
         }
 
         $orderItem->update(['item_status' => $request->status]);
+        if ($request->status === 'cancelled') {
+            $orderItem->product->increment('stock', $orderItem->quantity);
+        }
         $orderItem->order->syncStatus(); 
 
         return response()->json(['message' => 'Status updated successfully to ' . $request->status . '.', 'item' => $orderItem]);
