@@ -6,13 +6,6 @@ The project was built to demonstrate real-world e-commerce architecture decision
 
 ---
 
-## Live Demo & Repo
-
-- **Demo:** _add link_
-- **Repo:** _add link_
-
----
-
 ## Tech Stack
 
 | Layer | Technology |
